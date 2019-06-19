@@ -56,9 +56,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-p {
-  font-size: 20px;
-}
 .root {
   padding: 20px;
   width: 350px;
