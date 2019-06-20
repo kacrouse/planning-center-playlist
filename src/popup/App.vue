@@ -1,12 +1,16 @@
 <template>
   <section class="root">
+    <b-message v-if="!hasPlanningCenterToken" type="is-info">
+      <p>Planning Center authentication is necessary for this extension to run.</p>
+      <b-button type="is-primary">Login to Planning Center</b-button>
+    </b-message>
     <b-tabs type="is-toggle" size="is-small" expanded>
       <b-tab-item label="New Playlist">
         <div class="flex-container">
           <b-field class="name-input">
             <b-input/>
           </b-field>
-          <button class="button is-primary action-button">Create</button>
+          <b-button :disabled="!hasPlanningCenterToken" class="button is-primary action-button">Create</b-button>
         </div>
         <a @click="toggleShowMoreOptions" class="is-size-7">More Playlist Options</a>
         <b-collapse :open="showMoreOptions">
@@ -23,7 +27,7 @@
           <b-autocomplete placeholder="Find a playlist" class="playlist-selection">
             <template slot="empty">No results found</template>
           </b-autocomplete>
-          <button class="button is-primary action-button">{{action}}</button>
+          <b-button :disabled="!hasPlanningCenterToken" class="button is-primary action-button">{{action}}</b-button>
         </div>
         <div class="field">
           <b-radio v-model="action" native-value="Append">Append</b-radio>
@@ -45,13 +49,19 @@ export default {
     return {
       showMoreOptions: false,
       action: 'Append',
+      planningCenterToken: ''
     };
+  },
+  computed: {
+    hasPlanningCenterToken() {
+      return !!this.planningCenterToken;
+    }
   },
   methods: {
     toggleShowMoreOptions: function(event) {
       this.showMoreOptions = !this.showMoreOptions;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -64,7 +74,8 @@ export default {
   display: flex;
   align-items: flex-start;
 }
-.name-input, .playlist-selection {
+.name-input,
+.playlist-selection {
   flex-grow: 1;
   margin-right: 5px;
 }
