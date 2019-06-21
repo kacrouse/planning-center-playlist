@@ -15,5 +15,10 @@
     "scripts": [
       "background.js"
     ]
-  }
+  },
+  "permissions": [
+    "identity",
+    "https://api.planningcenteronline.com/*",
+    "https://*.spotify.com/*"
+  ]
 }
