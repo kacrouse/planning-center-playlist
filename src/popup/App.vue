@@ -1,8 +1,12 @@
 <template>
   <section class="root">
     <b-message v-if="!hasPlanningCenterToken" type="is-info">
-      <p>Planning Center authentication is necessary for this extension to run.</p>
+      <p class="content">This extension must have access to Planning Center to run.</p>
       <b-button type="is-primary">Login to Planning Center</b-button>
+    </b-message>
+    <b-message v-if="!hasPlanningCenterToken" type="is-info">
+      <p class="content">This extension must have access to Spotify to run.</p>
+      <b-button type="is-primary">Login to Spotify</b-button>
     </b-message>
     <b-tabs type="is-toggle" size="is-small" expanded>
       <b-tab-item label="New Playlist">
@@ -49,12 +53,16 @@ export default {
     return {
       showMoreOptions: false,
       action: 'Append',
-      planningCenterToken: ''
+      planningCenterToken: '',
+      spotifyToken: ''
     };
   },
   computed: {
     hasPlanningCenterToken() {
       return !!this.planningCenterToken;
+    },
+    hasSpotifyToken() {
+      return !!this.spotifyToken;
     }
   },
   methods: {
