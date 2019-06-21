@@ -36,6 +36,7 @@
     "core-js": "^3.0.1",
     "cross-env": "^5.2.0",
     "css-loader": "^2.1.1",
+    "dotenv-webpack": "^1.7.0",
     "ejs": "^2.6.1",
     "eslint": "^5.16.0",
     "eslint-config-prettier": "^4.3.0",

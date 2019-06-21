@@ -5,6 +5,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtensionReloader = require('webpack-extension-reloader');
 const { VueLoaderPlugin } = require('vue-loader');
 const { version } = require('./package.json');
+const Dotenv = require('dotenv-webpack');
 
 const config = {
   mode: process.env.NODE_ENV,
@@ -78,6 +79,7 @@ const config = {
         },
       },
     ]),
+    new Dotenv()
   ],
 };
 
