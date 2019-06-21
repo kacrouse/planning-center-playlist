@@ -28,7 +28,7 @@
       </b-tab-item>
       <b-tab-item label="Existing Playlist">
         <div class="flex-container bottom-margin">
-          <b-autocomplete placeholder="Find a playlist" class="playlist-selection">
+          <b-autocomplete placeholder="Find a playlist" class="playlist-selection" icon="magnify">
             <template slot="empty">No results found</template>
           </b-autocomplete>
           <b-button :disabled="!hasPlanningCenterToken" class="button is-primary action-button">{{action}}</b-button>
