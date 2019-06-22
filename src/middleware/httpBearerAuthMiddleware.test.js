@@ -11,8 +11,8 @@ describe('constructor', () => {
 describe('req', () => {
   test("The Authorization header should be set if it doesn't exist", () => {
     const token = 'some auth token';
-    const modifiedPayload = new HttpBearerAuthMiddleware(token).req({ req: {} });
-    const authHeader = modifiedPayload.req.headers.Authorization;
+    const modifiedPayload = new HttpBearerAuthMiddleware(token).req({ headers: {} });
+    const authHeader = modifiedPayload.headers.Authorization;
     expect(authHeader).toBeDefined();
     expect(authHeader).toEqual(`Bearer ${token}`);
   });

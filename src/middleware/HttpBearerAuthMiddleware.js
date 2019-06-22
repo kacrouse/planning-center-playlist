@@ -5,8 +5,7 @@ export default class {
   }
 
   req(payload) {
-    payload.req.headers = payload.req.headers || {};
-    payload.req.headers.Authorization = `Bearer ${this.token}`;
+    payload.headers.Authorization = `Bearer ${this.token}`;
     return payload;
   }
 }
