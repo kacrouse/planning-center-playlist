@@ -12,7 +12,7 @@
       <b-tab-item label="New Playlist">
         <div class="flex-container">
           <b-field class="name-input">
-            <b-input/>
+            <b-input v-model="playlistName"/>
           </b-field>
           <b-button
             :disabled="!hasPlanningCenterToken"
@@ -55,6 +55,7 @@
 
 <script>
 import { getPlanningCenterToken, getSpotifyToken } from '../services/auth';
+import PlanningCenterServicesApi from '../services/PlanningCenterServicesApi';
 
 export default {
   data() {
@@ -63,6 +64,8 @@ export default {
       action: 'Append',
       planningCenterToken: '',
       spotifyToken: '',
+      planningCenterPlanId: '',
+      playlistName: 'My Playlist'
     };
   },
   computed: {
@@ -99,6 +102,21 @@ export default {
         this.spotifyToken = token;
       }
     });
+  },
+  watch: {
+    planningCenterToken(val) {
+      browser.tabs
+        .getCurrent()
+        .then(tab => {
+          const execResult = /https:\/\/services\.planningcenteronline\.com\/plans\/(\d+)/.exec(tab.url);
+          const planId = execResult && execResult[1];
+          this.planningCenterPlanId = planId;
+          return new PlanningCenterServicesApi({ authToken: this.planningCenterToken }).find('plan', planId);
+        })
+        .then(plan => {
+          this.playlistName = plan.data.title || plan.data.dates || this.playlistName;
+        });
+    },
   },
 };
 </script>

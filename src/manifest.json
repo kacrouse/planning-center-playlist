@@ -18,6 +18,7 @@
   },
   "permissions": [
     "identity",
+    "tabs",
     "https://api.planningcenteronline.com/*",
     "https://*.spotify.com/*"
   ]
