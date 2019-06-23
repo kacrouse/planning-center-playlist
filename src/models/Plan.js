@@ -23,4 +23,8 @@ export default {
     jsonApi: 'hasOne',
     type: 'Plan',
   },
+  previous_plan: {
+    jsonApi: 'hasOne',
+    type: 'Plan',
+  },
 };
