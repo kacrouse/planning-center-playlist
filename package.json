@@ -12,7 +12,8 @@
     "build-zip": "node scripts/build-zip.js",
     "watch": "npm run build -- --watch",
     "watch:dev": "cross-env HMR=true npm run build:dev -- --watch",
-    "test": "jest"
+    "test": "jest",
+    "watch:test": "jest --watch"
   },
   "husky": {
     "hooks": {
