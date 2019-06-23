@@ -11,7 +11,7 @@ export default class PlanningCenterServicesApi extends JsonApi {
       apiUrl: 'https://api.planningcenteronline.com/services/v2',
     });
     if (authToken) {
-      this.replaceMiddleware('HTTP_BASIC_AUTH', new HttpBearerAuthMiddleware(authToken));
+      this.headers.Authorization = `Bearer ${authToken}`;
     } else {
       // todo: is there a better way to bypass oauth for tests?
       this.auth = { username: appId, password: appSecret };
