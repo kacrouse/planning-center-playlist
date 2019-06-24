@@ -10,6 +10,29 @@
     </b-message>
     <b-tabs type="is-toggle" size="is-small" expanded>
       <b-tab-item label="New Playlist">
+        <ul class="song-list">
+          <li v-for="song in songs" v-bind:key="song.spotifyUrl" class="song-list-item">
+            <b-taglist v-if="song.spotifyUrl" attached>
+              <b-tag>{{song.title}}</b-tag>
+              <b-tag type="is-success">
+                <b-icon icon="check" size="is-small"></b-icon>
+              </b-tag>
+            </b-taglist>
+            <b-tooltip
+              v-if="!song.spotifyUrl"
+              label="No Spotify link to this song found"
+              position="is-bottom"
+              multilined
+            >
+              <b-taglist attached>
+                <b-tag>{{song.title}}</b-tag>
+                <b-tag v-if="!song.spotifyUrl" type="is-danger">
+                  <b-icon icon="alert-circle" size="is-small"></b-icon>
+                </b-tag>
+              </b-taglist>
+            </b-tooltip>
+          </li>
+        </ul>
         <div class="flex-container">
           <b-field class="name-input">
             <b-input v-model="playlistName"/>
@@ -113,7 +136,7 @@ export default {
       this.planningCenterApi = new PlanningCenterServicesApi({ authToken: val });
 
       browser.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
-          const execResult = /https:\/\/services\.planningcenteronline\.com\/plans\/(\d+)/.exec(tab.url);
+        const execResult = /https:\/\/services\.planningcenteronline\.com\/plans\/(\d+)/.exec(tab.url);
         this.planningCenterPlanId = execResult && execResult[1];
       });
     },
@@ -184,5 +207,11 @@ export default {
 }
 .bottom-margin {
   margin-bottom: 20px;
+}
+.song-list-item:not(:last-child) {
+  margin-bottom: 5px;
+}
+.song-list {
+  margin-bottom: 10px;
 }
 </style>
