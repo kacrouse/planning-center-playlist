@@ -1,5 +1,15 @@
 <template>
   <section class="root">
+    <!-- todo: this technically shows up before songs have been added, make it show up after -->
+    <b-message
+      v-if="createdPlaylistUrl"
+      title="Success!"
+      type="is-success"
+      aria-close-label="Close message"
+    >
+      View your playlist
+      <a :href="createdPlaylistUrl" target="_blank">here.</a>
+    </b-message>
     <b-message v-if="!hasPlanningCenterToken" type="is-info">
       <p class="content">This extension must have access to Planning Center to run.</p>
       <b-button @click="launchPlanningCenterAuth" type="is-primary">Login to Planning Center</b-button>
@@ -33,19 +43,17 @@
             </a>
           </div>
           <div class="card-content">
-              <ul class="content">
-                <li
-                  v-for="song in songsWithoutSpotifyUrl"
-                  v-bind:key="song.spotifyUrl"
-                >{{song.title}}</li>
-              </ul>
+            <ul class="content">
+              <li v-for="song in songsWithoutSpotifyUrl" v-bind:key="song.spotifyUrl">{{song.title}}</li>
+            </ul>
           </div>
         </b-collapse>
         <div class="flex-container top-margin">
-          <b-field class="name-input">
+          <b-field label="Playlist Name" class="name-input">
             <b-input v-model="playlistName"/>
           </b-field>
           <b-button
+            @click="createSpotifyPlaylist"
             :disabled="!canCreate"
             class="button is-primary action-button"
           >Create</b-button>
@@ -53,11 +61,8 @@
         <a @click="toggleShowMoreOptions" class="is-size-7">More Playlist Options</a>
         <b-collapse :open="showMoreOptions">
           <div class="field">
-            <b-switch>Public</b-switch>
+            <b-switch v-model="playlistIsPublic">Public</b-switch>
           </div>
-          <b-field label="Description">
-            <b-input type="textarea" size="is-small"/>
-          </b-field>
         </b-collapse>
       </b-tab-item>
       <b-tab-item label="Existing Playlist">
@@ -87,6 +92,7 @@
 <script>
 import { getPlanningCenterToken, getSpotifyToken } from '../services/auth';
 import PlanningCenterServicesApi from '../services/PlanningCenterServicesApi';
+import SpotifyWebApi from 'spotify-web-api-node';
 
 export default {
   data() {
@@ -97,8 +103,12 @@ export default {
       spotifyToken: null,
       planningCenterPlanId: null,
       playlistName: 'My Playlist',
+      playlistIsPublic: false,
       planningCenterApi: null,
       songs: [],
+      spotifyUserId: null,
+      createdPlaylistId: null,
+      createdPlaylistUrl: null,
     };
   },
   computed: {
@@ -132,6 +142,19 @@ export default {
         this.spotifyToken = token;
       });
     },
+    createSpotifyPlaylist: function(event) {
+      // if no user id...
+      const getTrackFromUrlRegex = /https:\/\/open\.spotify\.com\/track\/([a-zA-Z0-9]+)/;
+      const spotifyApi = new SpotifyWebApi({ accessToken: this.spotifyToken });
+      spotifyApi
+        .createPlaylist(this.spotifyUserId, this.playlistName, { public: this.playlistIsPublic })
+        .then(({ body: { id, external_urls } }) => {
+          this.createdPlaylistId = id;
+          this.createdPlaylistUrl = external_urls.spotify;
+          return spotifyApi.addTracksToPlaylist(id, this.songsWithSpotifyUrl.map(song => `spotify:track:${getTrackFromUrlRegex.exec(song.spotifyUrl)[1]}`));
+        })
+        .catch(error => console.log(error));
+    },
   },
   mounted() {
     getPlanningCenterToken({ interactive: false }).then(token => {
@@ -156,6 +179,9 @@ export default {
         const execResult = /https:\/\/services\.planningcenteronline\.com\/plans\/(\d+)/.exec(tab.url);
         this.planningCenterPlanId = execResult && execResult[1];
       });
+    },
+    spotifyToken(val) {
+      new SpotifyWebApi({ accessToken: this.spotifyToken }).getMe().then(({ body: { id } }) => (this.spotifyUserId = id));
     },
     planningCenterPlanId(val) {
       if (!val) {
@@ -213,7 +239,7 @@ export default {
 }
 .flex-container {
   display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
 }
 .name-input,
 .playlist-selection {
@@ -225,5 +251,8 @@ export default {
 }
 .top-margin {
   margin-top: 20px;
+}
+.field.name-input {
+  margin-bottom: 0;
 }
 </style>
