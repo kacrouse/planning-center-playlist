@@ -18,11 +18,9 @@
             </a>
           </div>
           <div class="card-content">
-            <div class="content">
-              <ul>
-                <li v-for="song in songsWithSpotifyUrl" v-bind:key="song.spotifyUrl">{{song.title}}</li>
-              </ul>
-            </div>
+            <ul class="content">
+              <li v-for="song in songsWithSpotifyUrl" v-bind:key="song.spotifyUrl">{{song.title}}</li>
+            </ul>
           </div>
         </b-collapse>
         <b-collapse v-if="songsWithoutSpotifyUrl.length" class="card" :open="false">
@@ -35,14 +33,12 @@
             </a>
           </div>
           <div class="card-content">
-            <div class="content">
-              <ul>
+              <ul class="content">
                 <li
                   v-for="song in songsWithoutSpotifyUrl"
                   v-bind:key="song.spotifyUrl"
                 >{{song.title}}</li>
               </ul>
-            </div>
           </div>
         </b-collapse>
         <div class="flex-container top-margin">
@@ -50,7 +46,7 @@
             <b-input v-model="playlistName"/>
           </b-field>
           <b-button
-            :disabled="!hasPlanningCenterToken"
+            :disabled="!canCreate"
             class="button is-primary action-button"
           >Create</b-button>
         </div>
@@ -117,6 +113,9 @@ export default {
     },
     songsWithoutSpotifyUrl() {
       return this.songs.filter(song => !song.spotifyUrl);
+    },
+    canCreate() {
+      return this.hasPlanningCenterToken && this.hasSpotifyToken && this.songsWithSpotifyUrl.length > 0;
     },
   },
   methods: {
