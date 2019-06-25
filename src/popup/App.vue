@@ -10,30 +10,42 @@
     </b-message>
     <b-tabs type="is-toggle" size="is-small" expanded>
       <b-tab-item label="New Playlist">
-        <ul class="song-list">
-          <li v-for="song in songs" v-bind:key="song.spotifyUrl" class="song-list-item">
-            <b-taglist v-if="song.spotifyUrl" attached>
-              <b-tag>{{song.title}}</b-tag>
-              <b-tag type="is-success">
-                <b-icon icon="check" size="is-small"></b-icon>
-              </b-tag>
-            </b-taglist>
-            <b-tooltip
-              v-if="!song.spotifyUrl"
-              label="No Spotify link to this song found"
-              position="is-bottom"
-              multilined
-            >
-              <b-taglist attached>
-                <b-tag>{{song.title}}</b-tag>
-                <b-tag v-if="!song.spotifyUrl" type="is-danger">
-                  <b-icon icon="alert-circle" size="is-small"></b-icon>
-                </b-tag>
-              </b-taglist>
-            </b-tooltip>
-          </li>
-        </ul>
-        <div class="flex-container">
+        <b-collapse class="card" :open="false">
+          <div slot="trigger" slot-scope="props" class="card-header" role="button">
+            <p class="card-header-title">{{songsWithSpotifyUrl.length}} songs will be included</p>
+            <a class="card-header-icon">
+              <b-icon :icon="props.open ? 'chevron-down' : 'chevron-up'"></b-icon>
+            </a>
+          </div>
+          <div class="card-content">
+            <div class="content">
+              <ul>
+                <li v-for="song in songsWithSpotifyUrl" v-bind:key="song.spotifyUrl">{{song.title}}</li>
+              </ul>
+            </div>
+          </div>
+        </b-collapse>
+        <b-collapse v-if="songsWithoutSpotifyUrl.length" class="card" :open="false">
+          <div slot="trigger" slot-scope="props" class="card-header" role="button">
+            <p
+              class="card-header-title"
+            >{{songsWithoutSpotifyUrl.length}} songs are missing links to Spotify</p>
+            <a class="card-header-icon">
+              <b-icon :icon="props.open ? 'chevron-down' : 'chevron-up'"></b-icon>
+            </a>
+          </div>
+          <div class="card-content">
+            <div class="content">
+              <ul>
+                <li
+                  v-for="song in songsWithoutSpotifyUrl"
+                  v-bind:key="song.spotifyUrl"
+                >{{song.title}}</li>
+              </ul>
+            </div>
+          </div>
+        </b-collapse>
+        <div class="flex-container top-margin">
           <b-field class="name-input">
             <b-input v-model="playlistName"/>
           </b-field>
@@ -99,6 +111,12 @@ export default {
     },
     hasSpotifyToken() {
       return !!this.spotifyToken;
+    },
+    songsWithSpotifyUrl() {
+      return this.songs.filter(song => song.spotifyUrl);
+    },
+    songsWithoutSpotifyUrl() {
+      return this.songs.filter(song => !song.spotifyUrl);
     },
   },
   methods: {
@@ -175,13 +193,11 @@ export default {
           return Promise.all(spotifyAttachments.map(attachment => this.planningCenterApi.request(`${attachment.links.self}/open`, 'POST')));
         })
         .then(openedAttachments => {
-          console.log(openedAttachments);
           const songsByAttachmentId = songs.reduce((mapped, song) => {
             mapped[song.attachmentId] = song;
             return mapped;
           }, {});
           openedAttachments.forEach(open => {
-            console.log(open);
             songsByAttachmentId[open.data.attachment.id].spotifyUrl = open.data.attachment_url;
           });
           this.songs = songs;
@@ -194,7 +210,7 @@ export default {
 <style lang="scss" scoped>
 .root {
   padding: 20px;
-  width: 350px;
+  width: 450px;
 }
 .flex-container {
   display: flex;
@@ -208,10 +224,7 @@ export default {
 .bottom-margin {
   margin-bottom: 20px;
 }
-.song-list-item:not(:last-child) {
-  margin-bottom: 5px;
-}
-.song-list {
-  margin-bottom: 10px;
+.top-margin {
+  margin-top: 20px;
 }
 </style>
