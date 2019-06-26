@@ -2,13 +2,13 @@
   <section class="root">
     <!-- todo: this technically shows up before songs have been added, make it show up after -->
     <b-message
-      v-if="createdPlaylistUrl"
+      v-if="targetPlaylistUrl"
       title="Success!"
       type="is-success"
       aria-close-label="Close message"
     >
       View your playlist
-      <a :href="createdPlaylistUrl" target="_blank">here.</a>
+      <a :href="targetPlaylistUrl" target="_blank">here.</a>
     </b-message>
     <b-message v-if="!hasPlanningCenterToken" type="is-info">
       <p class="content">This extension must have access to Planning Center to run.</p>
@@ -77,13 +77,14 @@
             icon="magnify"
             v-model="playlistSearchString"
             @select="option => selectedPlaylist = option"
-            open-on-focus="true"
-            keep-first="true"
+            :open-on-focus="true"
+            :keep-first="true"
           >
             <template slot="empty">No results found</template>
           </b-autocomplete>
           <b-button
-            :disabled="!hasPlanningCenterToken"
+            @click="addToSpotifyPlaylist"
+            :disabled="!canAdd"
             class="button is-primary action-button"
           >Add</b-button>
         </div>
@@ -117,7 +118,7 @@ export default {
       songs: [],
       spotifyUserId: null,
       createdPlaylistId: null,
-      createdPlaylistUrl: null,
+      targetPlaylistUrl: null,
       existingPlaylists: [],
       playlistSearchString: '',
       selectedPlaylist: null,
@@ -137,7 +138,10 @@ export default {
       return this.songs.filter(song => !song.spotifyUrl);
     },
     canCreate() {
-      return this.hasPlanningCenterToken && this.hasSpotifyToken && this.songsWithSpotifyUrl.length > 0;
+      return this.hasPlanningCenterToken && this.hasSpotifyToken && this.songsWithSpotifyUrl.length > 0 && this.playlistName;
+    },
+    canAdd() {
+      return this.hasPlanningCenterToken && this.hasSpotifyToken && this.songsWithSpotifyUrl.length > 0 && this.selectedPlaylist;
     },
     filteredPlaylists() {
       if (!this.playlistSearchString) {
@@ -175,10 +179,20 @@ export default {
         .createPlaylist(this.spotifyUserId, this.playlistName, { public: this.playlistIsPublic })
         .then(({ body: { id, external_urls } }) => {
           this.createdPlaylistId = id;
-          this.createdPlaylistUrl = external_urls.spotify;
+          this.targetPlaylistUrl = external_urls.spotify;
           return spotifyApi.addTracksToPlaylist(id, this.songsWithSpotifyUrl.map(song => `spotify:track:${getTrackFromUrlRegex.exec(song.spotifyUrl)[1]}`));
         })
         .catch(error => console.log(error));
+    },
+    addToSpotifyPlaylist: function(event) {
+      const getTrackFromUrlRegex = /https:\/\/open\.spotify\.com\/track\/([a-zA-Z0-9]+)/;
+      new SpotifyWebApi({ accessToken: this.spotifyToken }).addTracksToPlaylist(
+        this.selectedPlaylist.id,
+        this.songsWithSpotifyUrl.map(song => `spotify:track:${getTrackFromUrlRegex.exec(song.spotifyUrl)[1]}`),
+        { position: this.existingPlaylistAction === 'append' ? this.selectedPlaylist.tracks.total : 0 }
+      ).then(result => {
+        this.targetPlaylistUrl = this.selectedPlaylist.external_urls.spotify;
+      });
     },
   },
   mounted() {
@@ -202,7 +216,7 @@ export default {
 
       browser.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
         const execResult = /planningcenteronline\.com\/plans\/(\d+)/.exec(tab.url);
-        this.planningCenterPlanId = execResult && execResult[1];
+        this.planningCenterPlanId = (execResult && execResult[1]) || 42325334;
       });
     },
     spotifyToken(val) {
