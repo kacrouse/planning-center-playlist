@@ -85,16 +85,13 @@
           <b-button
             :disabled="!hasPlanningCenterToken"
             class="button is-primary action-button"
-          >{{action}}</b-button>
+          >Add</b-button>
         </div>
         <div class="field">
-          <b-radio v-model="action" native-value="Append">Append</b-radio>
+          <b-radio v-model="existingPlaylistAction" native-value="append">Add to End</b-radio>
         </div>
         <div class="field">
-          <b-radio v-model="action" native-value="Prepend">Prepend</b-radio>
-        </div>
-        <div class="field">
-          <b-radio v-model="action" native-value="Replace">Replace</b-radio>
+          <b-radio v-model="existingPlaylistAction" native-value="prepend">Add to Beginning</b-radio>
         </div>
       </b-tab-item>
     </b-tabs>
@@ -110,7 +107,7 @@ export default {
   data() {
     return {
       showMoreOptions: false,
-      action: 'Append',
+      existingPlaylistAction: 'append',
       planningCenterToken: null,
       spotifyToken: null,
       planningCenterPlanId: null,
