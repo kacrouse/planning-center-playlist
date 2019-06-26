@@ -69,7 +69,17 @@
       </b-tab-item>
       <b-tab-item label="Existing Playlist">
         <div class="flex-container bottom-margin">
-          <b-autocomplete placeholder="Find a playlist" class="playlist-selection" icon="magnify">
+          <b-autocomplete
+            :data="filteredPlaylists"
+            field="name"
+            placeholder="Find a playlist"
+            class="playlist-selection"
+            icon="magnify"
+            v-model="playlistSearchString"
+            @select="option => selectedPlaylist = option"
+            open-on-focus="true"
+            keep-first="true"
+          >
             <template slot="empty">No results found</template>
           </b-autocomplete>
           <b-button
@@ -111,6 +121,9 @@ export default {
       spotifyUserId: null,
       createdPlaylistId: null,
       createdPlaylistUrl: null,
+      existingPlaylists: [],
+      playlistSearchString: '',
+      selectedPlaylist: null,
     };
   },
   computed: {
@@ -128,6 +141,19 @@ export default {
     },
     canCreate() {
       return this.hasPlanningCenterToken && this.hasSpotifyToken && this.songsWithSpotifyUrl.length > 0;
+    },
+    filteredPlaylists() {
+      if (!this.playlistSearchString) {
+        return this.existingPlaylists;
+      }
+      return this.existingPlaylists.filter(option => {
+        return (
+          option.name
+            .toString()
+            .toLowerCase()
+            .indexOf(this.playlistSearchString.toLowerCase()) >= 0
+        );
+      });
     },
   },
   methods: {
@@ -183,7 +209,10 @@ export default {
       });
     },
     spotifyToken(val) {
-      new SpotifyWebApi({ accessToken: this.spotifyToken }).getMe().then(({ body: { id } }) => (this.spotifyUserId = id));
+      if (!val) {
+        return;
+      }
+      new SpotifyWebApi({ accessToken: val }).getMe().then(({ body: { id } }) => (this.spotifyUserId = id));
     },
     planningCenterPlanId(val) {
       if (!val) {
@@ -229,6 +258,28 @@ export default {
           });
           this.songs = songs;
         });
+    },
+    spotifyUserId(val) {
+      if (!val) {
+        return;
+      }
+      const api = new SpotifyWebApi({ accessToken: this.spotifyToken });
+
+      const getAllPlaylists = (allPlaylists, limit, offset) => {
+        return api.getUserPlaylists(this.spotifyUserId, { limit, offset }).then(playlists => {
+          console.log(playlists);
+          if (playlists.body.next) {
+            return getAllPlaylists(allPlaylists.concat(playlists.body.items), limit, offset + limit);
+          } else {
+            return allPlaylists.concat(playlists.body.items);
+          }
+        });
+      };
+
+      // might be a bit eager to do this as soon as we have the token...
+      getAllPlaylists([], 50, 0).then(allPlaylists => {
+        this.existingPlaylists = allPlaylists.filter(playlist => playlist.collaborative || playlist.owner.id === this.spotifyUserId);
+      });
     },
   },
 };
