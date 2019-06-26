@@ -22,7 +22,9 @@
       <b-tab-item label="New Playlist">
         <b-collapse class="card" :open="false">
           <div slot="trigger" slot-scope="props" class="card-header" role="button">
-            <p class="card-header-title">{{songsWithSpotifyUrl.length}} songs will be included</p>
+            <p
+              class="card-header-title"
+            >{{songsWithSpotifyUrl.length + ' ' + (songsWithSpotifyUrl.length > 1 ? 'songs' : 'song')}} will be included</p>
             <a class="card-header-icon">
               <b-icon :icon="props.open ? 'chevron-down' : 'chevron-up'"></b-icon>
             </a>
@@ -37,7 +39,7 @@
           <div slot="trigger" slot-scope="props" class="card-header" role="button">
             <p
               class="card-header-title"
-            >{{songsWithoutSpotifyUrl.length}} songs are missing links to Spotify</p>
+            >{{songsWithoutSpotifyUrl.length + ' ' + (songsWithoutSpotifyUrl.length > 1 ? 'songs are missing links to Spotify' : 'song is missing a link to Spotify')}}</p>
             <a class="card-header-icon">
               <b-icon :icon="props.open ? 'chevron-down' : 'chevron-up'"></b-icon>
             </a>
