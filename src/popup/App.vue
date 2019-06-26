@@ -176,7 +176,7 @@ export default {
       this.planningCenterApi = new PlanningCenterServicesApi({ authToken: val });
 
       browser.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
-        const execResult = /https:\/\/services\.planningcenteronline\.com\/plans\/(\d+)/.exec(tab.url);
+        const execResult = /planningcenteronline\.com\/plans\/(\d+)/.exec(tab.url);
         this.planningCenterPlanId = execResult && execResult[1];
       });
     },
