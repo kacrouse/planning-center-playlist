@@ -19,4 +19,16 @@ export default {
   attachable: {
     jsonApi: 'hasOne',
   },
+  attachment_types: {
+    type: 'AttachmentType',
+    jsonApi: 'hasMany',
+  },
+  created_by: {
+    type: 'Person',
+    jsonApi: 'hasOne',
+  },
+  updated_by: {
+    type: 'Person',
+    jsonApi: 'hasOne',
+  },
 };

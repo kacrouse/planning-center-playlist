@@ -23,4 +23,16 @@ export default {
     jsonApi: 'hasOne',
     type: 'Arrangement',
   },
+  key: {
+    type: 'Key',
+    jsonApi: 'hasOne',
+  },
+  selected_layout: {
+    type: 'Layout',
+    jsonApi: 'hasOne',
+  },
+  selected_background: {
+    type: 'Attachment',
+    jsonApi: 'hasOne',
+  },
 };

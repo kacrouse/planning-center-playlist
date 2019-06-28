@@ -6,6 +6,11 @@ import Arrangement from '../models/Arrangement';
 import Song from '../models/Song';
 import Attachment from '../models/Attachment';
 import AttachmentActivity from '../models/AttachmentActivity';
+import Person from '../models/Person';
+import Series from '../models/Series';
+import ServiceType from '../models/ServiceType';
+import Key from '../models/Key';
+import Layout from '../models/Layout';
 
 export default class PlanningCenterServicesApi extends JsonApi {
   constructor({ authToken, appId, appSecret }) {
@@ -31,6 +36,11 @@ export default class PlanningCenterServicesApi extends JsonApi {
     this.define('Song', Song, { collectionPath: 'songs' });
     this.define('Attachment', Attachment, { collectionPath: 'attachments' });
     this.define('AttachmentActivity', AttachmentActivity);
+    this.define('Person', Person);
+    this.define('Series', Series);
+    this.define('ServiceType', ServiceType);
+    this.define('Key', Key);
+    this.define('Layout', Layout);
   }
 
   request(url, ...args) {
