@@ -23,6 +23,8 @@
       :active="createModalIsActive"
       :spotifyToken="spotifyToken"
       :defaultName="playlistName"
+      @cancel="createModalIsActive = false"
+      @playlist-created="playlistCreated"
     ></create-spotify-playlist-modal>
 
     <b-collapse class="card" :open="false">
@@ -68,7 +70,7 @@
         :keep-first="true"
       >
         <template slot="header">
-          <a @click="createSpotifyPlaylist">
+          <a @click="createModalIsActive = true">
             <span>Create new Spotify playlist</span>
           </a>
         </template>
@@ -162,9 +164,6 @@ export default {
         this.spotifyToken = token;
       });
     },
-    createSpotifyPlaylist(event) {
-      this.createModalIsActive = true;
-    },
     addToSpotifyPlaylist: function(event) {
       const getTrackFromUrlRegex = /https:\/\/open\.spotify\.com\/track\/([a-zA-Z0-9]+)/;
       new SpotifyWebApi({ accessToken: this.spotifyToken })
@@ -175,6 +174,10 @@ export default {
           this.targetPlaylistUrl = this.selectedPlaylist.external_urls.spotify;
         });
     },
+    playlistCreated(createdPlaylist) {
+      this.createModalIsActive = false;
+      console.log(createdPlaylist);
+    }
   },
   mounted() {
     getPlanningCenterToken({ interactive: false }).then(token => {
