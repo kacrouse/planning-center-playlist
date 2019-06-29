@@ -59,6 +59,7 @@
     </b-collapse>
     <div class="flex-container bottom-margin top-margin">
       <b-autocomplete
+        ref="playlistSelect"
         :data="filteredPlaylists"
         field="name"
         placeholder="Find a playlist"
@@ -176,8 +177,9 @@ export default {
     },
     playlistCreated(createdPlaylist) {
       this.createModalIsActive = false;
-      console.log(createdPlaylist);
-    }
+      this.existingPlaylists.push(createdPlaylist);
+      this.$refs.playlistSelect.setSelected(createdPlaylist);
+    },
   },
   mounted() {
     getPlanningCenterToken({ interactive: false }).then(token => {
