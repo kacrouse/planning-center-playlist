@@ -18,84 +18,74 @@
       <p class="content">This extension must have access to Spotify to run.</p>
       <b-button @click="launchSpotifyAuth" type="is-primary">Login to Spotify</b-button>
     </b-message>
-    <b-tabs type="is-toggle" size="is-small" expanded>
-      <b-tab-item label="New Playlist">
-        <b-collapse class="card" :open="false">
-          <div slot="trigger" slot-scope="props" class="card-header" role="button">
-            <p
-              class="card-header-title"
-            >{{songsWithSpotifyUrl.length + ' ' + (songsWithSpotifyUrl.length > 1 ? 'songs' : 'song')}} will be included</p>
-            <a class="card-header-icon">
-              <b-icon :icon="props.open ? 'chevron-down' : 'chevron-up'"></b-icon>
-            </a>
-          </div>
-          <div class="card-content">
-            <ul class="content">
-              <li v-for="song in songsWithSpotifyUrl" v-bind:key="song.spotifyUrl">{{song.title}}</li>
-            </ul>
-          </div>
-        </b-collapse>
-        <b-collapse v-if="songsWithoutSpotifyUrl.length" class="card" :open="false">
-          <div slot="trigger" slot-scope="props" class="card-header" role="button">
-            <p
-              class="card-header-title"
-            >{{songsWithoutSpotifyUrl.length + ' ' + (songsWithoutSpotifyUrl.length > 1 ? 'songs are missing links to Spotify' : 'song is missing a link to Spotify')}}</p>
-            <a class="card-header-icon">
-              <b-icon :icon="props.open ? 'chevron-down' : 'chevron-up'"></b-icon>
-            </a>
-          </div>
-          <div class="card-content">
-            <ul class="content">
-              <li v-for="song in songsWithoutSpotifyUrl" v-bind:key="song.spotifyUrl">{{song.title}}</li>
-            </ul>
-          </div>
-        </b-collapse>
-        <div class="flex-container top-margin">
-          <b-field label="Playlist Name" class="name-input">
-            <b-input v-model="playlistName"/>
-          </b-field>
-          <b-button
-            @click="createSpotifyPlaylist"
-            :disabled="!canCreate"
-            class="button is-primary action-button"
-          >Create</b-button>
-        </div>
-        <a @click="toggleShowMoreOptions" class="is-size-7">More Playlist Options</a>
-        <b-collapse :open="showMoreOptions">
-          <div class="field">
-            <b-switch v-model="playlistIsPublic">Public</b-switch>
-          </div>
-        </b-collapse>
-      </b-tab-item>
-      <b-tab-item label="Existing Playlist">
-        <div class="flex-container bottom-margin">
-          <b-autocomplete
-            :data="filteredPlaylists"
-            field="name"
-            placeholder="Find a playlist"
-            class="playlist-selection"
-            icon="magnify"
-            v-model="playlistSearchString"
-            @select="option => selectedPlaylist = option"
-            :open-on-focus="true"
-            :keep-first="true"
-          >
-            <template slot="empty">No results found</template>
-          </b-autocomplete>
-          <b-button
-            @click="addToSpotifyPlaylist"
-            :disabled="!canAdd"
-            class="button is-primary action-button"
-          >Add</b-button>
-        </div>
-        <div class="field">
-          <b-radio v-model="existingPlaylistAction" native-value="append">Add to End</b-radio>
-        </div>
-        <div class="field">
-          <b-radio v-model="existingPlaylistAction" native-value="prepend">Add to Beginning</b-radio>
-        </div>
-      </b-tab-item>
-    </b-tabs>
+
+    <create-spotify-playlist-modal
+      :active="createModalIsActive"
+      :spotifyToken="spotifyToken"
+      :defaultName="playlistName"
+    ></create-spotify-playlist-modal>
+
+    <b-collapse class="card" :open="false">
+      <div slot="trigger" slot-scope="props" class="card-header" role="button">
+        <p
+          class="card-header-title"
+        >{{songsWithSpotifyUrl.length + ' ' + (songsWithSpotifyUrl.length > 1 ? 'songs' : 'song')}} will be included</p>
+        <a class="card-header-icon">
+          <b-icon :icon="props.open ? 'chevron-down' : 'chevron-up'"></b-icon>
+        </a>
+      </div>
+      <div class="card-content">
+        <ul class="content">
+          <li v-for="song in songsWithSpotifyUrl" v-bind:key="song.spotifyUrl">{{song.title}}</li>
+        </ul>
+      </div>
+    </b-collapse>
+    <b-collapse v-if="songsWithoutSpotifyUrl.length" class="card" :open="false">
+      <div slot="trigger" slot-scope="props" class="card-header" role="button">
+        <p
+          class="card-header-title"
+        >{{songsWithoutSpotifyUrl.length + ' ' + (songsWithoutSpotifyUrl.length > 1 ? 'songs are missing links to Spotify' : 'song is missing a link to Spotify')}}</p>
+        <a class="card-header-icon">
+          <b-icon :icon="props.open ? 'chevron-down' : 'chevron-up'"></b-icon>
+        </a>
+      </div>
+      <div class="card-content">
+        <ul class="content">
+          <li v-for="song in songsWithoutSpotifyUrl" v-bind:key="song.spotifyUrl">{{song.title}}</li>
+        </ul>
+      </div>
+    </b-collapse>
+    <div class="flex-container bottom-margin top-margin">
+      <b-autocomplete
+        :data="filteredPlaylists"
+        field="name"
+        placeholder="Find a playlist"
+        class="playlist-selection"
+        icon="magnify"
+        v-model="playlistSearchString"
+        @select="option => selectedPlaylist = option"
+        :open-on-focus="true"
+        :keep-first="true"
+      >
+        <template slot="header">
+          <a @click="createSpotifyPlaylist">
+            <span>Create new Spotify playlist</span>
+          </a>
+        </template>
+        <template slot="empty">No results found</template>
+      </b-autocomplete>
+      <b-button
+        @click="addToSpotifyPlaylist"
+        :disabled="!canAdd"
+        class="button is-primary action-button"
+      >Add</b-button>
+    </div>
+    <div class="field">
+      <b-radio v-model="existingPlaylistAction" native-value="append">Add to End</b-radio>
+    </div>
+    <div class="field">
+      <b-radio v-model="existingPlaylistAction" native-value="prepend">Add to Beginning</b-radio>
+    </div>
   </section>
 </template>
 
@@ -122,6 +112,7 @@ export default {
       existingPlaylists: [],
       playlistSearchString: '',
       selectedPlaylist: null,
+      createModalIsActive: false,
     };
   },
   computed: {
@@ -171,28 +162,18 @@ export default {
         this.spotifyToken = token;
       });
     },
-    createSpotifyPlaylist: function(event) {
-      // if no user id...
-      const getTrackFromUrlRegex = /https:\/\/open\.spotify\.com\/track\/([a-zA-Z0-9]+)/;
-      const spotifyApi = new SpotifyWebApi({ accessToken: this.spotifyToken });
-      spotifyApi
-        .createPlaylist(this.spotifyUserId, this.playlistName, { public: this.playlistIsPublic })
-        .then(({ body: { id, external_urls } }) => {
-          this.createdPlaylistId = id;
-          this.targetPlaylistUrl = external_urls.spotify;
-          return spotifyApi.addTracksToPlaylist(id, this.songsWithSpotifyUrl.map(song => `spotify:track:${getTrackFromUrlRegex.exec(song.spotifyUrl)[1]}`));
-        })
-        .catch(error => console.log(error));
+    createSpotifyPlaylist(event) {
+      this.createModalIsActive = true;
     },
     addToSpotifyPlaylist: function(event) {
       const getTrackFromUrlRegex = /https:\/\/open\.spotify\.com\/track\/([a-zA-Z0-9]+)/;
-      new SpotifyWebApi({ accessToken: this.spotifyToken }).addTracksToPlaylist(
-        this.selectedPlaylist.id,
-        this.songsWithSpotifyUrl.map(song => `spotify:track:${getTrackFromUrlRegex.exec(song.spotifyUrl)[1]}`),
-        { position: this.existingPlaylistAction === 'append' ? this.selectedPlaylist.tracks.total : 0 }
-      ).then(result => {
-        this.targetPlaylistUrl = this.selectedPlaylist.external_urls.spotify;
-      });
+      new SpotifyWebApi({ accessToken: this.spotifyToken })
+        .addTracksToPlaylist(this.selectedPlaylist.id, this.songsWithSpotifyUrl.map(song => `spotify:track:${getTrackFromUrlRegex.exec(song.spotifyUrl)[1]}`), {
+          position: this.existingPlaylistAction === 'append' ? this.selectedPlaylist.tracks.total : 0,
+        })
+        .then(result => {
+          this.targetPlaylistUrl = this.selectedPlaylist.external_urls.spotify;
+        });
     },
   },
   mounted() {
