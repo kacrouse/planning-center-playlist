@@ -11,6 +11,7 @@ import Series from '../models/Series';
 import ServiceType from '../models/ServiceType';
 import Key from '../models/Key';
 import Layout from '../models/Layout';
+import Folder from '../models/Folder';
 
 export default class PlanningCenterServicesApi extends JsonApi {
   constructor({ authToken, appId, appSecret }) {
@@ -41,6 +42,7 @@ export default class PlanningCenterServicesApi extends JsonApi {
     this.define('ServiceType', ServiceType);
     this.define('Key', Key);
     this.define('Layout', Layout);
+    this.define('Folder', Folder);
   }
 
   request(url, ...args) {
