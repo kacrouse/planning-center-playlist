@@ -235,7 +235,7 @@ export default {
         .then(plan => {
           this.playlistName = plan.data.title || plan.data.dates || this.playlistName;
           return this.planningCenterApi
-            .one('service_type', plan.meta.parent.id)
+            .one('service_type', plan.data.service_type.id)
             .one('plan', val)
             .all('item')
             .get();
@@ -278,7 +278,6 @@ export default {
 
       const getAllPlaylists = (allPlaylists, limit, offset) => {
         return api.getUserPlaylists(this.spotifyUserId, { limit, offset }).then(playlists => {
-          console.log(playlists);
           if (playlists.body.next) {
             return getAllPlaylists(allPlaylists.concat(playlists.body.items), limit, offset + limit);
           } else {
