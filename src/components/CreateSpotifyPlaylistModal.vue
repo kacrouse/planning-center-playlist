@@ -3,7 +3,7 @@
     <form class="box" @submit.prevent="create">
       <div class="flex-container">
         <b-field label="Playlist Name" class="name-input">
-          <b-input v-model="playlistName"/>
+          <b-input v-model="playlistName" ref="nameInput"/>
         </b-field>
         <!-- clicking will call the create method because it is type submit -->
         <button
@@ -51,6 +51,14 @@ export default {
         .getMe()
         .then(({ body: { id } }) => (this.spotifyUserId = id))
         .catch(error => console.log(error));
+    },
+    active(val) {
+      if (val) {
+        // $refs not available until after nextTick
+        this.$nextTick(() => {
+          this.$refs.nameInput.focus();
+        });
+      }
     },
   },
 };
