@@ -9,8 +9,7 @@
       </div>
     </section>
     <!-- should probably just be a regular form element -->
-    <section class="form">
-      <!-- todo: this technically shows up before songs have been added, make it show up after -->
+    <form @submit.prevent="addToSpotifyPlaylist">
       <b-message
         v-if="targetPlaylistUrl"
         title="Success!"
@@ -88,13 +87,13 @@
           </template>
           <template slot="empty">No results found</template>
         </b-autocomplete>
-        <b-button @click="addToSpotifyPlaylist" :disabled="!canAdd" class="button is-primary">Add</b-button>
+        <b-button type="submit" :disabled="!canAdd" class="button is-primary">Add</b-button>
       </div>
       <div class="field">
         <b-radio v-model="existingPlaylistAction" native-value="append">Add to End</b-radio>
         <b-radio v-model="existingPlaylistAction" native-value="prepend">Add to Beginning</b-radio>
       </div>
-    </section>
+    </form>
   </section>
 </template>
 
@@ -297,7 +296,7 @@ export default {
 .playlist-selection >>> .dropdown-menu {
   margin-bottom: 20px;
 }
-.form {
+form {
   padding: 20px;
 }
 </style>
