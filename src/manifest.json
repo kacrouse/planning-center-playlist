@@ -7,8 +7,8 @@
     "48": "icons/icon_48.png",
     "128": "icons/icon_128.png"
   },
-  "browser_action": {
-    "default_title": "pco-to-spotify",
+  "page_action": {
+    "default_title": "Planning Center Playlist",
     "default_popup": "popup/popup.html"
   },
   "background": {
@@ -18,7 +18,8 @@
   },
   "permissions": [
     "identity",
-    "tabs",
+    "activeTab",
+    "declarativeContent",
     "https://api.planningcenteronline.com/*",
     "https://*.spotify.com/*"
   ]
