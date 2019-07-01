@@ -35,7 +35,6 @@ export default {
   methods: {
     create(event) {
       // if no user id...
-      const getTrackFromUrlRegex = /https:\/\/open\.spotify\.com\/track\/([a-zA-Z0-9]+)/;
       new SpotifyWebApi({ accessToken: this.spotifyToken })
         .createPlaylist(this.spotifyUserId, this.playlistName, { public: this.isPublic })
         .then(({ body }) => {

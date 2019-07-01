@@ -57,7 +57,7 @@
         </ul>
       </div>
     </b-collapse>
-    <div class="flex-container bottom-margin top-margin">
+    <div class="flex-container playlist-select-container">
       <b-autocomplete
         ref="playlistSelect"
         :data="filteredPlaylists"
@@ -72,7 +72,8 @@
       >
         <template slot="header">
           <a @click="createModalIsActive = true">
-            <span>Create new Spotify playlist</span>
+            <b-icon icon="playlist-plus"></b-icon>
+            <span style="margin: auto 0">Create a new playlist</span>
           </a>
         </template>
         <template slot="empty">No results found</template>
@@ -80,7 +81,7 @@
       <b-button
         @click="addToSpotifyPlaylist"
         :disabled="!canAdd"
-        class="button is-primary action-button"
+        class="button is-primary"
       >Add</b-button>
     </div>
     <div class="field">
@@ -100,13 +101,11 @@ import SpotifyWebApi from 'spotify-web-api-node';
 export default {
   data() {
     return {
-      showMoreOptions: false,
       existingPlaylistAction: 'append',
       planningCenterToken: null,
       spotifyToken: null,
       planningCenterPlanId: null,
       playlistName: 'My Playlist',
-      playlistIsPublic: false,
       planningCenterApi: null,
       songs: [],
       spotifyUserId: null,
@@ -131,11 +130,8 @@ export default {
     songsWithoutSpotifyUrl() {
       return this.songs.filter(song => !song.spotifyUrl);
     },
-    canCreate() {
-      return this.hasPlanningCenterToken && this.hasSpotifyToken && this.songsWithSpotifyUrl.length > 0 && this.playlistName;
-    },
     canAdd() {
-      return this.hasPlanningCenterToken && this.hasSpotifyToken && this.songsWithSpotifyUrl.length > 0 && this.selectedPlaylist;
+      return this.songsWithSpotifyUrl.length > 0 && this.selectedPlaylist;
     },
     filteredPlaylists() {
       if (!this.playlistSearchString) {
@@ -152,9 +148,6 @@ export default {
     },
   },
   methods: {
-    toggleShowMoreOptions: function(event) {
-      this.showMoreOptions = !this.showMoreOptions;
-    },
     launchPlanningCenterAuth: function(event) {
       getPlanningCenterToken({ interactive: true }).then(token => {
         this.planningCenterToken = token;
@@ -202,6 +195,7 @@ export default {
 
       browser.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
         const execResult = /planningcenteronline\.com\/plans\/(\d+)/.exec(tab.url);
+        // todo: remove id when done testing
         this.planningCenterPlanId = (execResult && execResult[1]) || 42325334;
       });
     },
@@ -272,7 +266,6 @@ export default {
         });
       };
 
-      // might be a bit eager to do this as soon as we have the token...
       getAllPlaylists([], 50, 0).then(allPlaylists => {
         this.existingPlaylists = allPlaylists.filter(playlist => playlist.collaborative || playlist.owner.id === this.spotifyUserId);
       });
@@ -290,18 +283,11 @@ export default {
   display: flex;
   align-items: flex-end;
 }
-.name-input,
 .playlist-selection {
   flex-grow: 1;
   margin-right: 5px;
 }
-.bottom-margin {
-  margin-bottom: 20px;
-}
-.top-margin {
-  margin-top: 20px;
-}
-.field.name-input {
-  margin-bottom: 0;
+.playlist-select-container {
+  margin: 20px 0;
 }
 </style>
