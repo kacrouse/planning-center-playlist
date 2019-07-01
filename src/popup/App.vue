@@ -285,7 +285,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .root {
   width: 450px;
 }
@@ -299,6 +299,9 @@ export default {
 }
 .playlist-select-container {
   margin: 20px 0;
+}
+.playlist-selection >>> .dropdown-menu {
+  margin-bottom: 20px;
 }
 .form {
   padding: 20px;
