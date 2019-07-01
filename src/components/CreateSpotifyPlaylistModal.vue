@@ -56,7 +56,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .flex-container {
   display: flex;
   align-items: flex-end;
@@ -66,5 +66,8 @@ export default {
   margin-bottom: 0;
   flex-grow: 1;
   margin-right: 5px;
+}
+::v-deep .modal-content {
+  max-height: none;
 }
 </style>
