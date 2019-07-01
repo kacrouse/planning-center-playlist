@@ -10,97 +10,91 @@
     </section>
     <!-- should probably just be a regular form element -->
     <section class="form">
-    <!-- todo: this technically shows up before songs have been added, make it show up after -->
-    <b-message
-      v-if="targetPlaylistUrl"
-      title="Success!"
-      type="is-success"
-      aria-close-label="Close message"
-    >
-      View your playlist
-      <a :href="targetPlaylistUrl" target="_blank">here.</a>
-    </b-message>
-    <b-message v-if="!hasPlanningCenterToken" type="is-info">
-      <p class="content">This extension must have access to Planning Center to run.</p>
-      <b-button @click="launchPlanningCenterAuth" type="is-primary">Login to Planning Center</b-button>
-    </b-message>
-    <b-message v-if="!hasSpotifyToken" type="is-info">
-      <p class="content">This extension must have access to Spotify to run.</p>
-      <b-button @click="launchSpotifyAuth" type="is-primary">Login to Spotify</b-button>
-    </b-message>
-
-    <create-spotify-playlist-modal
-      :active="createModalIsActive"
-      :spotifyToken="spotifyToken"
-      :defaultName="playlistName"
-      @cancel="createModalIsActive = false"
-      @playlist-created="playlistCreated"
-    ></create-spotify-playlist-modal>
-
-    <b-collapse class="card" :open="false">
-      <div slot="trigger" slot-scope="props" class="card-header" role="button">
-        <p
-          class="card-header-title"
-        >{{songsWithSpotifyUrl.length + ' ' + (songsWithSpotifyUrl.length > 1 ? 'songs' : 'song')}} will be included</p>
-        <a class="card-header-icon">
-          <b-icon :icon="props.open ? 'chevron-down' : 'chevron-up'"></b-icon>
-        </a>
-      </div>
-      <div class="card-content">
-        <ul class="content">
-          <li v-for="song in songsWithSpotifyUrl" v-bind:key="song.spotifyUrl">{{song.title}}</li>
-        </ul>
-      </div>
-    </b-collapse>
-    <b-collapse v-if="songsWithoutSpotifyUrl.length" class="card" :open="false">
-      <div slot="trigger" slot-scope="props" class="card-header" role="button">
-        <p
-          class="card-header-title"
-        >{{songsWithoutSpotifyUrl.length + ' ' + (songsWithoutSpotifyUrl.length > 1 ? 'songs are missing links to Spotify' : 'song is missing a link to Spotify')}}</p>
-        <a class="card-header-icon">
-          <b-icon :icon="props.open ? 'chevron-down' : 'chevron-up'"></b-icon>
-        </a>
-      </div>
-      <div class="card-content">
-        <ul class="content">
-          <li v-for="song in songsWithoutSpotifyUrl" v-bind:key="song.spotifyUrl">{{song.title}}</li>
-        </ul>
-      </div>
-    </b-collapse>
-    <div class="flex-container playlist-select-container">
-      <b-autocomplete
-        ref="playlistSelect"
-        :data="filteredPlaylists"
-        field="name"
-        placeholder="Find a playlist"
-        class="playlist-selection"
-        icon="magnify"
-        v-model="playlistSearchString"
-        @select="option => selectedPlaylist = option"
-        :open-on-focus="true"
-        :keep-first="true"
+      <!-- todo: this technically shows up before songs have been added, make it show up after -->
+      <b-message
+        v-if="targetPlaylistUrl"
+        title="Success!"
+        type="is-success"
+        aria-close-label="Close message"
       >
-        <template slot="header">
-          <a @click="createModalIsActive = true">
-            <b-icon icon="playlist-plus"></b-icon>
-            <span style="margin: auto 0">Create a new playlist</span>
+        View your playlist
+        <a :href="targetPlaylistUrl" target="_blank">here.</a>
+      </b-message>
+      <b-message v-if="!hasPlanningCenterToken" type="is-info">
+        <p class="content">This extension must have access to Planning Center to run.</p>
+        <b-button @click="launchPlanningCenterAuth" type="is-primary">Login to Planning Center</b-button>
+      </b-message>
+      <b-message v-if="!hasSpotifyToken" type="is-info">
+        <p class="content">This extension must have access to Spotify to run.</p>
+        <b-button @click="launchSpotifyAuth" type="is-primary">Login to Spotify</b-button>
+      </b-message>
+
+      <create-spotify-playlist-modal
+        :active="createModalIsActive"
+        :spotifyToken="spotifyToken"
+        :defaultName="playlistName"
+        @cancel="createModalIsActive = false"
+        @playlist-created="playlistCreated"
+      ></create-spotify-playlist-modal>
+
+      <b-collapse class="card" :open="false">
+        <div slot="trigger" slot-scope="props" class="card-header" role="button">
+          <p
+            class="card-header-title"
+          >{{songsWithSpotifyUrl.length + ' ' + (songsWithSpotifyUrl.length > 1 ? 'songs' : 'song')}} will be included</p>
+          <a class="card-header-icon">
+            <b-icon :icon="props.open ? 'chevron-down' : 'chevron-up'"></b-icon>
           </a>
-        </template>
-        <template slot="empty">No results found</template>
-      </b-autocomplete>
-      <b-button
-        @click="addToSpotifyPlaylist"
-        :disabled="!canAdd"
-        class="button is-primary"
-      >Add</b-button>
-    </div>
-    <div class="field">
-      <b-radio v-model="existingPlaylistAction" native-value="append">Add to End</b-radio>
-    </div>
-    <div class="field">
-      <b-radio v-model="existingPlaylistAction" native-value="prepend">Add to Beginning</b-radio>
-    </div>
-  </section>
+        </div>
+        <div class="card-content">
+          <ul class="content">
+            <li v-for="song in songsWithSpotifyUrl" v-bind:key="song.spotifyUrl">{{song.title}}</li>
+          </ul>
+        </div>
+      </b-collapse>
+      <b-collapse v-if="songsWithoutSpotifyUrl.length" class="card" :open="false">
+        <div slot="trigger" slot-scope="props" class="card-header" role="button">
+          <p
+            class="card-header-title"
+          >{{songsWithoutSpotifyUrl.length + ' ' + (songsWithoutSpotifyUrl.length > 1 ? 'songs are missing links to Spotify' : 'song is missing a link to Spotify')}}</p>
+          <a class="card-header-icon">
+            <b-icon :icon="props.open ? 'chevron-down' : 'chevron-up'"></b-icon>
+          </a>
+        </div>
+        <div class="card-content">
+          <ul class="content">
+            <li v-for="song in songsWithoutSpotifyUrl" v-bind:key="song.spotifyUrl">{{song.title}}</li>
+          </ul>
+        </div>
+      </b-collapse>
+      <div class="flex-container playlist-select-container">
+        <b-autocomplete
+          ref="playlistSelect"
+          :data="filteredPlaylists"
+          field="name"
+          placeholder="Find a playlist"
+          class="playlist-selection"
+          icon="magnify"
+          v-model="playlistSearchString"
+          @select="option => selectedPlaylist = option"
+          :open-on-focus="true"
+          :keep-first="true"
+        >
+          <template slot="header">
+            <a @click="createModalIsActive = true">
+              <b-icon icon="playlist-plus"></b-icon>
+              <span style="margin: auto 0">Create a new playlist</span>
+            </a>
+          </template>
+          <template slot="empty">No results found</template>
+        </b-autocomplete>
+        <b-button @click="addToSpotifyPlaylist" :disabled="!canAdd" class="button is-primary">Add</b-button>
+      </div>
+      <div class="field">
+        <b-radio v-model="existingPlaylistAction" native-value="append">Add to End</b-radio>
+        <b-radio v-model="existingPlaylistAction" native-value="prepend">Add to Beginning</b-radio>
+      </div>
+    </section>
   </section>
 </template>
 
