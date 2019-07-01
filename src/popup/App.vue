@@ -1,5 +1,15 @@
 <template>
   <section class="root">
+    <section class="hero is-primary is-small is-bold">
+      <div class="hero-body">
+        <div class="container">
+          <h1 class="title">Planning Center to Spotify</h1>
+          <!-- <h2 class="subtitle">Add songs from a service to a Spotify playlist!</h2> -->
+        </div>
+      </div>
+    </section>
+    <!-- should probably just be a regular form element -->
+    <section class="form">
     <!-- todo: this technically shows up before songs have been added, make it show up after -->
     <b-message
       v-if="targetPlaylistUrl"
@@ -90,6 +100,7 @@
     <div class="field">
       <b-radio v-model="existingPlaylistAction" native-value="prepend">Add to Beginning</b-radio>
     </div>
+  </section>
   </section>
 </template>
 
@@ -276,7 +287,6 @@ export default {
 
 <style lang="scss" scoped>
 .root {
-  padding: 20px;
   width: 450px;
 }
 .flex-container {
@@ -289,5 +299,8 @@ export default {
 }
 .playlist-select-container {
   margin: 20px 0;
+}
+.form {
+  padding: 20px;
 }
 </style>
