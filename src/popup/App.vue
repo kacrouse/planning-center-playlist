@@ -1,15 +1,15 @@
 <template>
   <section class="root">
-    <section class="hero is-primary is-small is-bold">
+    <header class="hero is-primary is-small is-bold">
       <div class="hero-body">
         <div class="container">
           <h1 class="title">Planning Center to Spotify</h1>
           <!-- <h2 class="subtitle">Add songs from a service to a Spotify playlist!</h2> -->
         </div>
       </div>
-    </section>
-    <!-- should probably just be a regular form element -->
-    <form @submit.prevent="addToSpotifyPlaylist">
+    </header>
+
+    <main>
       <b-message
         v-if="targetPlaylistUrl"
         title="Success!"
@@ -19,59 +19,65 @@
         View your playlist
         <a :href="targetPlaylistUrl" target="_blank">here.</a>
       </b-message>
-      <b-message v-if="!hasPlanningCenterToken" type="is-info">
+      <b-message v-if="!planningCenterToken" type="is-info">
         <p class="content">This extension must have access to Planning Center to run.</p>
         <b-button @click="launchPlanningCenterAuth" type="is-primary">Login to Planning Center</b-button>
       </b-message>
-      <b-message v-if="!hasSpotifyToken" type="is-info">
+      <b-message v-if="!spotifyToken" type="is-info">
         <p class="content">This extension must have access to Spotify to run.</p>
         <b-button @click="launchSpotifyAuth" type="is-primary">Login to Spotify</b-button>
       </b-message>
 
-      <b-collapse class="card" :open="false">
-        <div slot="trigger" slot-scope="props" class="card-header" role="button">
-          <p
-            class="card-header-title"
-          >{{songsWithSpotifyUrl.length + ' ' + (songsWithSpotifyUrl.length > 1 ? 'songs' : 'song')}} will be included</p>
-          <a class="card-header-icon">
-            <b-icon :icon="props.open ? 'chevron-down' : 'chevron-up'"></b-icon>
-          </a>
+      <form @submit.prevent="addToSpotifyPlaylist">
+        <b-collapse class="card" :open="false">
+          <div slot="trigger" slot-scope="props" class="card-header" role="button">
+            <p
+              class="card-header-title"
+            >{{songsWithSpotifyUrl.length + ' ' + (songsWithSpotifyUrl.length > 1 ? 'songs' : 'song')}} will be included</p>
+            <a class="card-header-icon">
+              <b-icon :icon="props.open ? 'chevron-down' : 'chevron-up'"></b-icon>
+            </a>
+          </div>
+          <div class="card-content">
+            <ul class="content">
+              <li v-for="song in songsWithSpotifyUrl" v-bind:key="song.spotifyUrl">{{song.title}}</li>
+            </ul>
+          </div>
+        </b-collapse>
+        <b-collapse v-if="songsWithoutSpotifyUrl.length" class="card" :open="false">
+          <div slot="trigger" slot-scope="props" class="card-header" role="button">
+            <p
+              class="card-header-title"
+            >{{songsWithoutSpotifyUrl.length + ' ' + (songsWithoutSpotifyUrl.length > 1 ? 'songs are missing links to Spotify' : 'song is missing a link to Spotify')}}</p>
+            <a class="card-header-icon">
+              <b-icon :icon="props.open ? 'chevron-down' : 'chevron-up'"></b-icon>
+            </a>
+          </div>
+          <div class="card-content">
+            <ul class="content">
+              <li v-for="song in songsWithoutSpotifyUrl" v-bind:key="song.spotifyUrl">{{song.title}}</li>
+            </ul>
+          </div>
+        </b-collapse>
+        <div class="flex-container playlist-select-container">
+          <spotify-playlist-select
+            class="playlist-select"
+            :spotifyToken="spotifyToken"
+            :defaultNewPlaylistName="playlistName"
+            @playlist-selected="playlist => selectedPlaylist = playlist"
+          ></spotify-playlist-select>
+          <b-button
+            type="submit"
+            :disabled="songsWithSpotifyUrl.length === 0 || !selectedPlaylist"
+            class="button is-primary"
+          >Add</b-button>
         </div>
-        <div class="card-content">
-          <ul class="content">
-            <li v-for="song in songsWithSpotifyUrl" v-bind:key="song.spotifyUrl">{{song.title}}</li>
-          </ul>
+        <div class="field">
+          <b-radio v-model="playlistAction" native-value="append">Add to End</b-radio>
+          <b-radio v-model="playlistAction" native-value="prepend">Add to Beginning</b-radio>
         </div>
-      </b-collapse>
-      <b-collapse v-if="songsWithoutSpotifyUrl.length" class="card" :open="false">
-        <div slot="trigger" slot-scope="props" class="card-header" role="button">
-          <p
-            class="card-header-title"
-          >{{songsWithoutSpotifyUrl.length + ' ' + (songsWithoutSpotifyUrl.length > 1 ? 'songs are missing links to Spotify' : 'song is missing a link to Spotify')}}</p>
-          <a class="card-header-icon">
-            <b-icon :icon="props.open ? 'chevron-down' : 'chevron-up'"></b-icon>
-          </a>
-        </div>
-        <div class="card-content">
-          <ul class="content">
-            <li v-for="song in songsWithoutSpotifyUrl" v-bind:key="song.spotifyUrl">{{song.title}}</li>
-          </ul>
-        </div>
-      </b-collapse>
-      <div class="flex-container playlist-select-container">
-        <spotify-playlist-select
-          class="playlist-selection"
-          :spotifyToken="spotifyToken"
-          :defaultNewPlaylistName="playlistName"
-          @playlist-selected="playlist => selectedPlaylist = playlist"
-        ></spotify-playlist-select>
-        <b-button type="submit" :disabled="!canAdd" class="button is-primary">Add</b-button>
-      </div>
-      <div class="field">
-        <b-radio v-model="existingPlaylistAction" native-value="append">Add to End</b-radio>
-        <b-radio v-model="existingPlaylistAction" native-value="prepend">Add to Beginning</b-radio>
-      </div>
-    </form>
+      </form>
+    </main>
   </section>
 </template>
 
@@ -83,7 +89,7 @@ import SpotifyWebApi from 'spotify-web-api-node';
 export default {
   data() {
     return {
-      existingPlaylistAction: 'append',
+      playlistAction: 'append',
       planningCenterToken: null,
       spotifyToken: null,
       planningCenterPlanId: null,
@@ -96,20 +102,11 @@ export default {
     };
   },
   computed: {
-    hasPlanningCenterToken() {
-      return !!this.planningCenterToken;
-    },
-    hasSpotifyToken() {
-      return !!this.spotifyToken;
-    },
     songsWithSpotifyUrl() {
       return this.songs.filter(song => song.spotifyUrl);
     },
     songsWithoutSpotifyUrl() {
       return this.songs.filter(song => !song.spotifyUrl);
-    },
-    canAdd() {
-      return this.songsWithSpotifyUrl.length > 0 && this.selectedPlaylist;
     },
   },
   methods: {
@@ -127,7 +124,7 @@ export default {
       const getTrackFromUrlRegex = /https:\/\/open\.spotify\.com\/track\/([a-zA-Z0-9]+)/;
       new SpotifyWebApi({ accessToken: this.spotifyToken })
         .addTracksToPlaylist(this.selectedPlaylist.id, this.songsWithSpotifyUrl.map(song => `spotify:track:${getTrackFromUrlRegex.exec(song.spotifyUrl)[1]}`), {
-          position: this.existingPlaylistAction === 'append' ? this.selectedPlaylist.tracks.total : 0,
+          position: this.playlistAction === 'append' ? this.selectedPlaylist.tracks.total : 0,
         })
         .then(result => {
           this.targetPlaylistUrl = this.selectedPlaylist.external_urls.spotify;
@@ -212,21 +209,16 @@ export default {
 .root {
   width: 450px;
 }
-.flex-container {
-  display: flex;
-  align-items: flex-end;
+main {
+  padding: 20px;
 }
-.playlist-selection {
+.playlist-select {
   flex-grow: 1;
   margin-right: 5px;
 }
 .playlist-select-container {
   margin: 20px 0;
-}
-.playlist-selection >>> .dropdown-menu {
-  margin-bottom: 20px;
-}
-form {
-  padding: 20px;
+  display: flex;
+  align-items: flex-end;
 }
 </style>
