@@ -66,7 +66,7 @@ export default {
     },
     playlistCreated(createdPlaylist) {
       this.createModalIsActive = false;
-      this.existingPlaylists.push(createdPlaylist);
+      this.playlistOptions.push(createdPlaylist);
       this.$refs.autocomplete.setSelected(createdPlaylist);
     },
   },
@@ -104,4 +104,7 @@ export default {
 </script>
 
 <style scoped>
+.playlist-selection >>> .dropdown-menu {
+  margin-bottom: 20px;
+}
 </style>
