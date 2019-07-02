@@ -6,11 +6,11 @@
           <b-input v-model="playlistName" ref="nameInput"/>
         </b-field>
         <!-- clicking will call the create method because it is type submit -->
-        <button
+        <b-button
           native-type="submit"
-          class="button is-primary"
           :disabled="!spotifyToken || !playlistName"
-        >Create</button>
+          type="is-primary"
+        >Create</b-button>
       </div>
       <div class="field">
         <b-switch v-model="isPublic">Public</b-switch>
