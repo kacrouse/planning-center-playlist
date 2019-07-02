@@ -67,7 +67,7 @@
             @playlist-selected="playlist => selectedPlaylist = playlist"
           ></spotify-playlist-select>
           <b-button
-            type="submit"
+            native-type="submit"
             :disabled="songsWithSpotifyUrl.length === 0 || !selectedPlaylist"
             class="button is-primary"
           >Add</b-button>

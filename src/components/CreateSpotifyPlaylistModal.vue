@@ -7,7 +7,7 @@
         </b-field>
         <!-- clicking will call the create method because it is type submit -->
         <button
-          type="submit"
+          native-type="submit"
           class="button is-primary"
           :disabled="!spotifyToken || !playlistName"
         >Create</button>
