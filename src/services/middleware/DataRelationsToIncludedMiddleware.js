@@ -1,4 +1,6 @@
 // fix for https://github.com/twg/devour/issues/155
+// todo: this does not work for responses that contain multiple items of the same resource
+// it won't fail, but the relationships will not be included on the returned object
 export default {
   name: 'move-data-relationships-to-included',
   res: payload => {
