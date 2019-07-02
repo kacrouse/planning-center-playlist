@@ -28,14 +28,6 @@
         <b-button @click="launchSpotifyAuth" type="is-primary">Login to Spotify</b-button>
       </b-message>
 
-      <create-spotify-playlist-modal
-        :active="createModalIsActive"
-        :spotifyToken="spotifyToken"
-        :defaultName="playlistName"
-        @cancel="createModalIsActive = false"
-        @playlist-created="playlistCreated"
-      ></create-spotify-playlist-modal>
-
       <b-collapse class="card" :open="false">
         <div slot="trigger" slot-scope="props" class="card-header" role="button">
           <p
@@ -67,26 +59,12 @@
         </div>
       </b-collapse>
       <div class="flex-container playlist-select-container">
-        <b-autocomplete
-          ref="playlistSelect"
-          :data="filteredPlaylists"
-          field="name"
-          placeholder="Find a playlist"
+        <spotify-playlist-select
           class="playlist-selection"
-          icon="magnify"
-          v-model="playlistSearchString"
-          @select="option => selectedPlaylist = option"
-          :open-on-focus="true"
-          :keep-first="true"
-        >
-          <template slot="header">
-            <a @click="createModalIsActive = true">
-              <b-icon icon="playlist-plus"></b-icon>
-              <span style="margin: auto 0">Create a new playlist</span>
-            </a>
-          </template>
-          <template slot="empty">No results found</template>
-        </b-autocomplete>
+          :spotifyToken="spotifyToken"
+          :defaultNewPlaylistName="playlistName"
+          @playlist-selected="playlist => selectedPlaylist = playlist"
+        ></spotify-playlist-select>
         <b-button type="submit" :disabled="!canAdd" class="button is-primary">Add</b-button>
       </div>
       <div class="field">
@@ -112,13 +90,9 @@ export default {
       playlistName: 'My Playlist',
       planningCenterApi: null,
       songs: [],
-      spotifyUserId: null,
       createdPlaylistId: null,
       targetPlaylistUrl: null,
-      existingPlaylists: [],
-      playlistSearchString: '',
       selectedPlaylist: null,
-      createModalIsActive: false,
     };
   },
   computed: {
@@ -136,19 +110,6 @@ export default {
     },
     canAdd() {
       return this.songsWithSpotifyUrl.length > 0 && this.selectedPlaylist;
-    },
-    filteredPlaylists() {
-      if (!this.playlistSearchString) {
-        return this.existingPlaylists;
-      }
-      return this.existingPlaylists.filter(option => {
-        return (
-          option.name
-            .toString()
-            .toLowerCase()
-            .indexOf(this.playlistSearchString.toLowerCase()) >= 0
-        );
-      });
     },
   },
   methods: {
@@ -171,11 +132,6 @@ export default {
         .then(result => {
           this.targetPlaylistUrl = this.selectedPlaylist.external_urls.spotify;
         });
-    },
-    playlistCreated(createdPlaylist) {
-      this.createModalIsActive = false;
-      this.existingPlaylists.push(createdPlaylist);
-      this.$refs.playlistSelect.setSelected(createdPlaylist);
     },
   },
   mounted() {
@@ -202,12 +158,6 @@ export default {
         // todo: remove id when done testing
         this.planningCenterPlanId = (execResult && execResult[1]) || 42325334;
       });
-    },
-    spotifyToken(val) {
-      if (!val) {
-        return;
-      }
-      new SpotifyWebApi({ accessToken: val }).getMe().then(({ body: { id } }) => (this.spotifyUserId = id));
     },
     planningCenterPlanId(val) {
       if (!val) {
@@ -253,26 +203,6 @@ export default {
           });
           this.songs = songs;
         });
-    },
-    spotifyUserId(val) {
-      if (!val) {
-        return;
-      }
-      const api = new SpotifyWebApi({ accessToken: this.spotifyToken });
-
-      const getAllPlaylists = (allPlaylists, limit, offset) => {
-        return api.getUserPlaylists(this.spotifyUserId, { limit, offset }).then(playlists => {
-          if (playlists.body.next) {
-            return getAllPlaylists(allPlaylists.concat(playlists.body.items), limit, offset + limit);
-          } else {
-            return allPlaylists.concat(playlists.body.items);
-          }
-        });
-      };
-
-      getAllPlaylists([], 50, 0).then(allPlaylists => {
-        this.existingPlaylists = allPlaylists.filter(playlist => playlist.collaborative || playlist.owner.id === this.spotifyUserId);
-      });
     },
   },
 };
