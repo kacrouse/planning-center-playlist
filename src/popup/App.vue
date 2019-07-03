@@ -5,11 +5,10 @@
     <main>
       <b-message
         v-if="targetPlaylistUrl"
-        title="Success!"
         type="is-success"
         aria-close-label="Close message"
       >
-        View your playlist
+        Success! View your playlist
         <a :href="targetPlaylistUrl" target="_blank">here.</a>
       </b-message>
       <b-message v-if="!planningCenterToken" type="is-info">
