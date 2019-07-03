@@ -71,9 +71,9 @@
 
 <script>
 import { getPlanningCenterToken, getSpotifyToken } from '../services/auth';
-import PlanningCenterServicesApi from '../services/PlanningCenterServicesApi';
 import SpotifyWebApi from 'spotify-web-api-node';
 import { getPlanIdFromUrl } from '../services/PlanningCenterUtil';
+import PlanningCenterServicePlan from '../services/PlanningCenterServicePlan';
 
 export default {
   data() {
@@ -137,56 +137,23 @@ export default {
       if (!val) {
         return;
       }
-      this.planningCenterApi = new PlanningCenterServicesApi({ authToken: val });
-
       browser.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
-        this.planningCenterPlanId = getPlanIdFromUrl(tab.url);
+        this.planningCenterPlanId = getPlanIdFromUrl(tab.url) || 42745891;
       });
     },
     planningCenterPlanId(val) {
       if (!val) {
         return;
       }
-      let songs;
-      this.planningCenterApi
-        .find('plan', val)
-        .then(plan => {
-          this.playlistName = plan.data.title || plan.data.dates || this.playlistName;
-          return this.planningCenterApi
-            .one('service_type', plan.data.service_type.id)
-            .one('plan', val)
-            .all('item')
-            .get();
-        })
-        .then(items => {
-          const songItems = items.data.filter(item => item.item_type === 'song');
-          songs = songItems.map(songItem => ({
-            title: songItem.title,
-            itemId: songItem.id,
-          }));
-          return Promise.all(songItems.map(item => this.planningCenterApi.request(`${item.links.self}/attachments`)));
-        })
-        .then(attachmentsByItem => {
-          const spotifyAttachments = attachmentsByItem.reduce((flattened, itemAttachments) => {
-            const spotifyAttachment = itemAttachments.data.find(attachment => attachment.pco_type === 'AttachmentSpotify');
-            if (spotifyAttachment) {
-              songs.find(song => song.itemId === itemAttachments.meta.parent.id).attachmentId = spotifyAttachment.id;
-              return flattened.concat(spotifyAttachment);
-            }
-            return flattened;
-          }, []);
-          return Promise.all(spotifyAttachments.map(attachment => this.planningCenterApi.request(`${attachment.links.self}/open`, 'POST')));
-        })
-        .then(openedAttachments => {
-          const songsByAttachmentId = songs.reduce((mapped, song) => {
-            mapped[song.attachmentId] = song;
-            return mapped;
-          }, {});
-          openedAttachments.forEach(open => {
-            songsByAttachmentId[open.data.attachment.id].spotifyUrl = open.data.attachment_url;
-          });
-          this.songs = songs;
-        });
+
+      const plan = new PlanningCenterServicePlan({
+        authToken: this.planningCenterToken,
+        planId: this.planningCenterPlanId,
+      });
+      plan.get().then(plan => {
+        this.playlistName = plan.data.title || plan.data.dates || this.playlistName;
+      });
+      plan.getSongs().then(songs => (this.songs = songs));
     },
   },
 };
