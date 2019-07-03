@@ -1,21 +1,21 @@
 <template>
   <b-modal :active="active" width="75%" @close="$emit('cancel')">
-    <form class="box" @submit.prevent="create">
-      <div class="flex-container">
-        <b-field label="Playlist Name" class="name-input">
-          <b-input v-model="playlistName" ref="nameInput"/>
-        </b-field>
-        <!-- clicking will call the create method because it is type submit -->
-        <b-button
-          native-type="submit"
-          :disabled="!spotifyToken || !playlistName"
-          type="is-primary"
-        >Create</b-button>
-      </div>
-      <div class="field">
-        <b-switch v-model="isPublic">Public</b-switch>
-      </div>
-    </form>
+    <div class="box">
+    <div class="flex-container">
+      <b-field label="Playlist Name" class="name-input">
+        <b-input v-model="playlistName" ref="nameInput"/>
+      </b-field>
+      <b-button
+        native-type="button"
+        :disabled="!spotifyToken || !playlistName"
+        type="is-primary"
+        @click="create"
+      >Create</b-button>
+    </div>
+    <div class="field">
+      <b-switch v-model="isPublic">Public</b-switch>
+    </div>
+    </div>
   </b-modal>
 </template>
 
