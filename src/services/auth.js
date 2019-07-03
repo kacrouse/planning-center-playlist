@@ -45,7 +45,7 @@ export async function getSpotifyToken({ interactive = true }) {
         response_type: 'token',
         redirect_uri: browser.identity.getRedirectURL(),
         //todo: state: '',
-        scope: 'playlist-modify-public playlist-modify-private',
+        scope: 'playlist-modify-public playlist-modify-private playlist-read-collaborative playlist-read-private',
       })}`,
       interactive,
     });
