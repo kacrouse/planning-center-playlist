@@ -3,11 +3,7 @@
     <hero title="Planning Center to Spotify"></hero>
 
     <main>
-      <b-message
-        v-if="targetPlaylistUrl"
-        type="is-success"
-        aria-close-label="Close message"
-      >
+      <b-message v-if="targetPlaylistUrl" type="is-success" aria-close-label="Close message">
         Success! View your playlist
         <a :href="targetPlaylistUrl" target="_blank">here.</a>
       </b-message>
@@ -77,6 +73,7 @@
 import { getPlanningCenterToken, getSpotifyToken } from '../services/auth';
 import PlanningCenterServicesApi from '../services/PlanningCenterServicesApi';
 import SpotifyWebApi from 'spotify-web-api-node';
+import { getPlanIdFromUrl } from '../services/PlanningCenterUtil';
 
 export default {
   data() {
@@ -143,9 +140,7 @@ export default {
       this.planningCenterApi = new PlanningCenterServicesApi({ authToken: val });
 
       browser.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
-        const execResult = /planningcenteronline\.com\/plans\/(\d+)/.exec(tab.url);
-        // todo: remove id when done testing
-        this.planningCenterPlanId = (execResult && execResult[1]) || 42325334;
+        this.planningCenterPlanId = getPlanIdFromUrl(tab.url);
       });
     },
     planningCenterPlanId(val) {
