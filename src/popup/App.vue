@@ -1,13 +1,6 @@
 <template>
   <section class="root">
-    <header class="hero is-primary is-small is-bold">
-      <div class="hero-body">
-        <div class="container">
-          <h1 class="title">Planning Center to Spotify</h1>
-          <!-- <h2 class="subtitle">Add songs from a service to a Spotify playlist!</h2> -->
-        </div>
-      </div>
-    </header>
+    <hero title="Planning Center to Spotify"></hero>
 
     <main>
       <b-message
