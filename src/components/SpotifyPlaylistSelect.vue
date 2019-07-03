@@ -21,7 +21,7 @@
       :keep-first="true"
     >
       <template slot="header">
-        <a @click="createModalIsActive = true">
+        <a @click="createModalIsActive = true" class="new-playlist-link">
           <b-icon icon="playlist-plus"></b-icon>
           <span>Create a new playlist</span>
         </a>
@@ -106,5 +106,11 @@ export default {
 <style scoped>
 .playlist-selection >>> .dropdown-menu {
   margin-bottom: 20px;
+}
+.new-playlist-link {
+  display: flex;
+}
+.new-playlist-link span {
+  margin-left: 3px;
 }
 </style>
