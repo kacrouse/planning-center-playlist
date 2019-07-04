@@ -17,36 +17,16 @@
       </b-message>
 
       <form @submit.prevent="addToSpotifyPlaylist">
-        <b-collapse class="card" :open="false">
-          <div slot="trigger" slot-scope="props" class="card-header" role="button">
-            <p
-              class="card-header-title"
-            >{{songsWithSpotifyUrl.length + ' ' + (songsWithSpotifyUrl.length > 1 ? 'songs' : 'song')}} will be included</p>
-            <a class="card-header-icon">
-              <b-icon :icon="props.open ? 'chevron-down' : 'chevron-up'"></b-icon>
-            </a>
-          </div>
-          <div class="card-content">
-            <ul class="content">
-              <li v-for="song in songsWithSpotifyUrl" v-bind:key="song.spotifyUrl">{{song.title}}</li>
-            </ul>
-          </div>
-        </b-collapse>
-        <b-collapse v-if="songsWithoutSpotifyUrl.length" class="card" :open="false">
-          <div slot="trigger" slot-scope="props" class="card-header" role="button">
-            <p
-              class="card-header-title"
-            >{{songsWithoutSpotifyUrl.length + ' ' + (songsWithoutSpotifyUrl.length > 1 ? 'songs are missing links to Spotify' : 'song is missing a link to Spotify')}}</p>
-            <a class="card-header-icon">
-              <b-icon :icon="props.open ? 'chevron-down' : 'chevron-up'"></b-icon>
-            </a>
-          </div>
-          <div class="card-content">
-            <ul class="content">
-              <li v-for="song in songsWithoutSpotifyUrl" v-bind:key="song.spotifyUrl">{{song.title}}</li>
-            </ul>
-          </div>
-        </b-collapse>
+        <song-list v-if="songsWithSpotifyUrl.length"
+          :songs="songsWithSpotifyUrl"
+          headerSuffix="song will be included"
+          headerSuffixPlural="songs will be included"
+        />
+        <song-list v-if="songsWithoutSpotifyUrl.length"
+          :songs="songsWithoutSpotifyUrl"
+          headerSuffix="song is missing a link to Spotify"
+          headerSuffixPlural="songs are missing links to Spotify"
+        />
         <div class="flex-container playlist-select-container">
           <spotify-playlist-select
             class="playlist-select"
