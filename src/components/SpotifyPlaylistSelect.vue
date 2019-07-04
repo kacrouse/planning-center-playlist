@@ -19,6 +19,7 @@
       @select="playlistSelected"
       :open-on-focus="true"
       :keep-first="true"
+      v-bind:loading="loadingPlaylists"
     >
       <template slot="header">
         <a @click="createModalIsActive = true" class="new-playlist-link">
@@ -38,6 +39,7 @@ export default {
   props: ['spotifyToken', 'defaultNewPlaylistName'],
   data() {
     return {
+      loadingPlaylists: false,
       playlistSearchString: '',
       createModalIsActive: false,
       selectedPlaylist: null,
@@ -75,6 +77,7 @@ export default {
       if (!val) {
         return;
       }
+      this.loadingPlaylists = true;
       const api = new SpotifyWebApi({ accessToken: this.spotifyToken });
 
       const getAllPlaylists = (allPlaylists, limit, offset, spotifyUserId) => {
@@ -97,7 +100,8 @@ export default {
         .then(allPlaylists => {
           this.playlistOptions = allPlaylists.filter(p => p.collaborative || p.owner.id === spotifyUserId);
         })
-        .catch(error => console.log(error));
+        .catch(error => console.log(error))
+        .finally(() => this.loadingPlaylists = false);
     },
   },
 };
