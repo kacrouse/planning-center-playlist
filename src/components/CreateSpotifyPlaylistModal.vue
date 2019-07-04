@@ -1,5 +1,6 @@
 <template>
   <b-modal :active="active" width="75%" @close="$emit('cancel')">
+    <b-loading :is-full-page="true" :active="isSaving"></b-loading>
     <div class="box">
     <div class="flex-container">
       <b-field label="Playlist Name" class="name-input">
@@ -30,17 +31,19 @@ export default {
       playlistName: this.defaultName,
       isPublic: false,
       spotifyUserId: '',
+      isSaving: false
     };
   },
   methods: {
     create(event) {
-      // if no user id...
+      this.isSaving = true;
       new SpotifyWebApi({ accessToken: this.spotifyToken })
         .createPlaylist(this.spotifyUserId, this.playlistName, { public: this.isPublic })
         .then(({ body }) => {
           this.$emit('playlist-created', body);
         })
-        .catch(error => console.log(error));
+        .catch(error => console.log(error))
+        .finally(() => this.isSaving = false);
     },
   },
   watch: {
