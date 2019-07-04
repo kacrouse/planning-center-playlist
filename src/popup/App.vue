@@ -16,17 +16,20 @@
         <b-button @click="launchSpotifyAuth" type="is-primary">Login to Spotify</b-button>
       </b-message>
 
+      <song-list
+        v-if="songsWithSpotifyUrl.length"
+        :songs="songsWithSpotifyUrl"
+        headerSuffix="song will be included"
+        headerSuffixPlural="songs will be included"
+      />
+      <song-list
+        v-if="songsWithoutSpotifyUrl.length"
+        :songs="songsWithoutSpotifyUrl"
+        headerSuffix="song is missing a link to Spotify"
+        headerSuffixPlural="songs are missing links to Spotify"
+      />
+
       <form @submit.prevent="addToSpotifyPlaylist">
-        <song-list v-if="songsWithSpotifyUrl.length"
-          :songs="songsWithSpotifyUrl"
-          headerSuffix="song will be included"
-          headerSuffixPlural="songs will be included"
-        />
-        <song-list v-if="songsWithoutSpotifyUrl.length"
-          :songs="songsWithoutSpotifyUrl"
-          headerSuffix="song is missing a link to Spotify"
-          headerSuffixPlural="songs are missing links to Spotify"
-        />
         <div class="flex-container playlist-select-container">
           <spotify-playlist-select
             class="playlist-select"
