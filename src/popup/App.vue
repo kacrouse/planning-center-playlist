@@ -8,11 +8,11 @@
         Success! View your playlist
         <a :href="targetPlaylistUrl" target="_blank">here.</a>
       </b-message>
-      <b-message v-if="!planningCenterToken" type="is-info">
+      <b-message v-if="checkedForPlanningCenterToken && !planningCenterToken" type="is-info">
         <p class="content">This extension must have access to Planning Center to run.</p>
         <b-button @click="launchPlanningCenterAuth" type="is-primary">Login to Planning Center</b-button>
       </b-message>
-      <b-message v-if="!spotifyToken" type="is-info">
+      <b-message v-if="checkedForSpotifyToken && !spotifyToken" type="is-info">
         <p class="content">This extension must have access to Spotify to run.</p>
         <b-button @click="launchSpotifyAuth" type="is-primary">Login to Spotify</b-button>
       </b-message>
@@ -64,7 +64,9 @@ export default {
     return {
       isLoading: false,
       playlistAction: 'append',
+      checkedForPlanningCenterToken: false,
       planningCenterToken: null,
+      checkedForSpotifyToken: false,
       spotifyToken: null,
       planningCenterPlanId: null,
       playlistName: 'My Playlist',
@@ -110,11 +112,13 @@ export default {
       if (token) {
         this.planningCenterToken = token;
       }
+      this.checkedForPlanningCenterToken = true;
     });
     getSpotifyToken({ interactive: false }).then(token => {
       if (token) {
         this.spotifyToken = token;
       }
+      this.checkedForSpotifyToken = true;
     });
   },
   watch: {
