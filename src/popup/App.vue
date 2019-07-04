@@ -97,6 +97,7 @@ export default {
       });
     },
     addToSpotifyPlaylist: function(event) {
+      this.isLoading = true;
       const getTrackFromUrlRegex = /https:\/\/open\.spotify\.com\/track\/([a-zA-Z0-9]+)/;
       new SpotifyWebApi({ accessToken: this.spotifyToken })
         .addTracksToPlaylist(this.selectedPlaylist.id, this.songsWithSpotifyUrl.map(song => `spotify:track:${getTrackFromUrlRegex.exec(song.spotifyUrl)[1]}`), {
@@ -104,7 +105,8 @@ export default {
         })
         .then(result => {
           this.targetPlaylistUrl = this.selectedPlaylist.external_urls.spotify;
-        });
+        })
+        .finally(() => this.isLoading = false);
     },
   },
   mounted() {
