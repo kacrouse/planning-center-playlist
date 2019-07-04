@@ -1,5 +1,6 @@
 <template>
   <section class="root">
+    <b-loading :is-full-page="true" :active="isLoading"></b-loading>
     <hero title="Planning Center to Spotify"></hero>
 
     <main>
@@ -61,6 +62,7 @@ import PlanningCenterServicePlan from '../services/PlanningCenterServicePlan';
 export default {
   data() {
     return {
+      isLoading: false,
       playlistAction: 'append',
       planningCenterToken: null,
       spotifyToken: null,
@@ -129,6 +131,7 @@ export default {
         return;
       }
 
+      this.isLoading = true;
       const plan = new PlanningCenterServicePlan({
         authToken: this.planningCenterToken,
         planId: this.planningCenterPlanId,
@@ -136,7 +139,9 @@ export default {
       plan.get().then(plan => {
         this.playlistName = plan.data.title || plan.data.dates || this.playlistName;
       });
-      plan.getSongs().then(songs => (this.songs = songs));
+      plan.getSongs()
+        .then(songs => this.songs = songs)
+        .finally(() => this.isLoading = false);
     },
   },
 };
