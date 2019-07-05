@@ -2,7 +2,10 @@
   <header class="hero is-primary is-small is-bold">
       <div class="hero-body">
         <div class="container">
-          <h1 class="title">{{title}}</h1>
+          <h1 class="title is-flex">
+            <b-icon icon="playlist-music" size="is-medium"></b-icon>
+            <span class=title-text>{{title}}</span>
+          </h1>
           <h2 v-if="subtitle" class="subtitle">{{subtitle}}</h2>
         </div>
       </div>
@@ -22,5 +25,10 @@ export default {
 }
 .title {
   font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+}
+.title .title-text {
+  margin-left: 10px;
 }
 </style>
