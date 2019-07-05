@@ -16,6 +16,9 @@
         <p class="content">This extension must have access to Spotify to run.</p>
         <b-button @click="launchSpotifyAuth" type="is-primary">Login to Spotify</b-button>
       </b-message>
+      <b-message v-if="checkedForSongs && songs.length === 0" type="is-danger">
+        No songs were found in this plan. Add some to create a playlist!
+      </b-message>
 
       <song-list
         v-if="songsWithSpotifyUrl.length"
@@ -72,6 +75,7 @@ export default {
       playlistName: 'My Playlist',
       planningCenterApi: null,
       songs: [],
+      checkedForSongs: false,
       createdPlaylistId: null,
       targetPlaylistUrl: null,
       selectedPlaylist: null,
@@ -149,7 +153,10 @@ export default {
       });
       plan
         .getSongs()
-        .then(songs => (this.songs = songs))
+        .then(songs => {
+          this.songs = songs;
+          this.checkedForSongs = true;
+        })
         .finally(() => (this.isLoading = false));
     },
   },
