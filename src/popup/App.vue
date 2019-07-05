@@ -4,34 +4,39 @@
     <hero title="Planning Center to Spotify" icon="playlist-music"></hero>
 
     <main>
-      <b-message v-if="targetPlaylistUrl" type="is-success" aria-close-label="Close message">
-        Success! View your playlist
-        <a :href="targetPlaylistUrl" target="_blank">here.</a>
-      </b-message>
-      <b-message v-if="checkedForPlanningCenterToken && !planningCenterToken" type="is-info">
-        <p class="content">This extension must have access to Planning Center to run.</p>
-        <b-button @click="launchPlanningCenterAuth" type="is-primary">Login to Planning Center</b-button>
-      </b-message>
-      <b-message v-if="checkedForSpotifyToken && !spotifyToken" type="is-info">
-        <p class="content">This extension must have access to Spotify to run.</p>
-        <b-button @click="launchSpotifyAuth" type="is-primary">Login to Spotify</b-button>
-      </b-message>
-      <b-message v-if="checkedForSongs && songs.length === 0" type="is-danger">
-        No songs were found in this plan. Add some to create a playlist!
-      </b-message>
+      <section>
+        <b-message v-if="targetPlaylistUrl" type="is-success" aria-close-label="Close message">
+          Success! View your playlist
+          <a :href="targetPlaylistUrl" target="_blank">here.</a>
+        </b-message>
+        <b-message v-if="checkedForPlanningCenterToken && !planningCenterToken" type="is-info">
+          <p class="content">This extension must have access to Planning Center to run.</p>
+          <b-button @click="launchPlanningCenterAuth" type="is-primary">Login to Planning Center</b-button>
+        </b-message>
+        <b-message v-if="checkedForSpotifyToken && !spotifyToken" type="is-info">
+          <p class="content">This extension must have access to Spotify to run.</p>
+          <b-button @click="launchSpotifyAuth" type="is-primary">Login to Spotify</b-button>
+        </b-message>
+        <b-message
+          v-if="checkedForSongs && songs.length === 0"
+          type="is-danger"
+        >No songs were found in this plan. Add some to create a playlist!</b-message>
+      </section>
 
-      <song-list
-        v-if="songsWithSpotifyUrl.length"
-        :songs="songsWithSpotifyUrl"
-        headerSuffix="song will be included"
-        headerSuffixPlural="songs will be included"
-      />
-      <song-list
-        v-if="songsWithoutSpotifyUrl.length"
-        :songs="songsWithoutSpotifyUrl"
-        headerSuffix="song is missing a link to Spotify"
-        headerSuffixPlural="songs are missing links to Spotify"
-      />
+      <section>
+        <song-list
+          v-if="songsWithSpotifyUrl.length"
+          :songs="songsWithSpotifyUrl"
+          headerSuffix="song will be included"
+          headerSuffixPlural="songs will be included"
+        />
+        <song-list
+          v-if="songsWithoutSpotifyUrl.length"
+          :songs="songsWithoutSpotifyUrl"
+          headerSuffix="song is missing a link to Spotify"
+          headerSuffixPlural="songs are missing links to Spotify"
+        />
+      </section>
 
       <form @submit.prevent="addToSpotifyPlaylist">
         <div class="flex-container playlist-select-container">
@@ -91,7 +96,7 @@ export default {
     },
     hasSelectedPlaylist() {
       return !!(this.selectedPlaylist && this.selectedPlaylist.id);
-    }
+    },
   },
   methods: {
     launchPlanningCenterAuth: function(event) {
