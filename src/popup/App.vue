@@ -62,7 +62,7 @@ import PlanningCenterServicePlan from '../services/PlanningCenterServicePlan';
 export default {
   data() {
     return {
-      isLoading: false,
+      isLoading: true,
       playlistAction: 'append',
       checkedForPlanningCenterToken: false,
       planningCenterToken: null,
