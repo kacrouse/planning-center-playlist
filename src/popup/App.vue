@@ -1,7 +1,7 @@
 <template>
   <section class="root">
     <b-loading :is-full-page="true" :active="isLoading"></b-loading>
-    <hero title="Planning Center to Spotify"></hero>
+    <hero title="Planning Center to Spotify" icon="playlist-music"></hero>
 
     <main>
       <b-message v-if="targetPlaylistUrl" type="is-success" aria-close-label="Close message">
