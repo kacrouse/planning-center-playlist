@@ -71,6 +71,9 @@ export default {
       this.playlistOptions.push(createdPlaylist);
       this.$refs.autocomplete.setSelected(createdPlaylist);
     },
+    clearSelected() {
+      this.$refs.autocomplete.setSelected({});
+    }
   },
   watch: {
     spotifyToken(val) {

@@ -36,6 +36,7 @@
       <form @submit.prevent="addToSpotifyPlaylist">
         <div class="flex-container playlist-select-container">
           <spotify-playlist-select
+            ref="playlistSelect"
             class="playlist-select"
             :spotifyToken="spotifyToken"
             :defaultNewPlaylistName="playlistName"
@@ -43,7 +44,7 @@
           ></spotify-playlist-select>
           <b-button
             native-type="submit"
-            :disabled="songsWithSpotifyUrl.length === 0 || !selectedPlaylist"
+            :disabled="songsWithSpotifyUrl.length === 0 || !hasSelectedPlaylist"
             class="button is-primary"
           >Add</b-button>
         </div>
@@ -88,6 +89,9 @@ export default {
     songsWithoutSpotifyUrl() {
       return this.songs.filter(song => !song.spotifyUrl);
     },
+    hasSelectedPlaylist() {
+      return !!(this.selectedPlaylist && this.selectedPlaylist.id);
+    }
   },
   methods: {
     launchPlanningCenterAuth: function(event) {
@@ -109,6 +113,7 @@ export default {
         })
         .then(result => {
           this.targetPlaylistUrl = this.selectedPlaylist.external_urls.spotify;
+          this.$refs.playlistSelect.clearSelected();
         })
         .finally(() => (this.isLoading = false));
     },
