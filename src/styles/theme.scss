@@ -15,7 +15,7 @@ $colors: (
     "dark": ($dark, $dark-invert),
     "primary": ($primary, $primary-invert),
     "primary-light": ($primary-light, $primary-light-invert),
-    "info": ($info, $info-invert),
+    "info": ($primary-light, $primary-light-invert),
     "success": ($success, $success-invert),
     "warning": ($warning, $warning-invert),
     "danger": ($danger, $danger-invert)
