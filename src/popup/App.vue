@@ -106,22 +106,24 @@ export default {
         .then(result => {
           this.targetPlaylistUrl = this.selectedPlaylist.external_urls.spotify;
         })
-        .finally(() => this.isLoading = false);
+        .finally(() => (this.isLoading = false));
     },
   },
   mounted() {
-    getPlanningCenterToken({ interactive: false }).then(token => {
-      if (token) {
-        this.planningCenterToken = token;
-      }
-      this.checkedForPlanningCenterToken = true;
-    });
-    getSpotifyToken({ interactive: false }).then(token => {
-      if (token) {
-        this.spotifyToken = token;
-      }
-      this.checkedForSpotifyToken = true;
-    });
+    this.isLoading = true;
+    Promise.all([getPlanningCenterToken({ interactive: false }), getSpotifyToken({ interactive: false })])
+      .then(([planningCenterToken, spotifyToken]) => {
+        if (planningCenterToken) {
+          this.planningCenterToken = planningCenterToken;
+        }
+        this.checkedForPlanningCenterToken = true;
+
+        if (spotifyToken) {
+          this.spotifyToken = spotifyToken;
+        }
+        this.checkedForSpotifyToken = true;
+      })
+      .finally(() => (this.isLoading = false));
   },
   watch: {
     planningCenterToken(val) {
@@ -145,9 +147,10 @@ export default {
       plan.get().then(plan => {
         this.playlistName = plan.data.title || plan.data.dates || this.playlistName;
       });
-      plan.getSongs()
-        .then(songs => this.songs = songs)
-        .finally(() => this.isLoading = false);
+      plan
+        .getSongs()
+        .then(songs => (this.songs = songs))
+        .finally(() => (this.isLoading = false));
     },
   },
 };
