@@ -5,7 +5,7 @@ import SpotifyPlaylistSelect from '../components/SpotifyPlaylistSelect';
 import Hero from '../components/Hero';
 import SongList from '../components/SongList';
 import Buefy from 'buefy';
-import 'buefy/dist/buefy.css';
+import '../styles/theme.scss';
 
 Vue.use(Buefy);
 
