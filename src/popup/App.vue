@@ -48,8 +48,8 @@
           >Add</b-button>
         </div>
         <div class="field">
-          <b-radio v-model="playlistAction" native-value="append">Add to End</b-radio>
           <b-radio v-model="playlistAction" native-value="prepend">Add to Beginning</b-radio>
+          <b-radio v-model="playlistAction" native-value="append">Add to End</b-radio>
         </div>
       </form>
     </main>
@@ -66,7 +66,7 @@ export default {
   data() {
     return {
       isLoading: true,
-      playlistAction: 'append',
+      playlistAction: 'prepend',
       checkedForPlanningCenterToken: false,
       planningCenterToken: null,
       checkedForSpotifyToken: false,
