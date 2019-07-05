@@ -1,5 +1,5 @@
 <template>
-  <header class="hero is-primary is-small is-bold">
+  <header class="hero is-primary is-small">
       <div class="hero-body">
         <div class="container">
           <h1 class="title is-flex">
