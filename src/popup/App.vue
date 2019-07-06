@@ -21,9 +21,12 @@
           v-if="checkedForSongs && songs.length === 0"
           type="is-danger"
         >No songs were found in this plan. Add some to create a playlist!</b-message>
+        <b-message v-for="error in errors" v-bind:key="error" type="is-danger">
+          Error: {{error}}
+        </b-message>
       </section>
 
-      <section>
+      <section class="song-lists">
         <song-list
           v-if="songsWithSpotifyUrl.length"
           :songs="songsWithSpotifyUrl"
@@ -85,6 +88,7 @@ export default {
       createdPlaylistId: null,
       targetPlaylistUrl: null,
       selectedPlaylist: null,
+      errors: []
     };
   },
   computed: {
@@ -158,19 +162,27 @@ export default {
         authToken: this.planningCenterToken,
         planId: this.planningCenterPlanId,
       });
-      plan.get().then(plan => {
-        this.playlistName = plan.data.title || plan.data.dates || this.playlistName;
-      });
+      plan
+        .get()
+        .then(plan => {
+          this.playlistName = plan.data.title || plan.data.dates || this.playlistName;
+        })
+        .catch(error => this.errors.push(...getPlanningCenterErrorMessages(error)));
       plan
         .getSongs()
         .then(songs => {
           this.songs = songs;
           this.checkedForSongs = true;
         })
+        .catch(error => this.errors.push(...getPlanningCenterErrorMessages(error)))
         .finally(() => (this.isLoading = false));
     },
   },
 };
+
+function getPlanningCenterErrorMessages({errors=[]}) {
+  return errors.map(e => e.detail);
+}
 </script>
 
 <style scoped>
@@ -188,5 +200,8 @@ main {
   margin: 20px 0;
   display: flex;
   align-items: flex-end;
+}
+.song-lists {
+  margin: 10px 0;
 }
 </style>

@@ -26,6 +26,9 @@ $link: $primary;
 $link-invert: $primary-invert;
 $link-focus-border: $primary;
 
+$block-spacing: 0.5rem;
+$message-body-padding: 0.75em 1em;
+
 // Import Bulma and Buefy styles
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
