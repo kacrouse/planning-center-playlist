@@ -171,22 +171,24 @@ export default {
         .then(plan => {
           this.playlistName = plan.data.title || plan.data.dates || this.playlistName;
         })
-        .catch(error => this.errors.push(...getPlanningCenterErrorMessages(error)));
+        .catch(({errors=[], ...rest}) => {
+          console.error({errors, ...rest});
+          this.errors.push(...errors.map(e => e.detail));
+        });
       plan
         .getSongs()
         .then(songs => {
           this.songs = songs;
           this.checkedForSongs = true;
         })
-        .catch(error => this.errors.push(...getPlanningCenterErrorMessages(error)))
+        .catch(({errors=[], ...rest}) => {
+          console.error({errors, ...rest});
+          this.errors.push(...errors.map(e => e.detail));
+        })
         .finally(() => (this.isLoading = false));
     },
   },
 };
-
-function getPlanningCenterErrorMessages({errors=[]}) {
-  return errors.map(e => e.detail);
-}
 </script>
 
 <style scoped>
