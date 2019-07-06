@@ -41,7 +41,10 @@ export default {
   components: {
     CreateSpotifyPlaylistModal,
   },
-  props: ['spotifyToken', 'defaultNewPlaylistName'],
+  props: {
+    spotifyToken: String,
+    defaultNewPlaylistName: String
+  },
   data() {
     return {
       loadingPlaylists: false,

@@ -24,8 +24,14 @@
 import SpotifyWebApi from 'spotify-web-api-node';
 
 export default {
-  // todo: fill out additional meta on props
-  props: ['active', 'defaultName', 'spotifyToken'],
+  props: {
+    active: Boolean,
+    defaultName: {
+      type: String,
+      default: 'My Playlist',
+    },
+    spotifyToken: String,
+  },
   data() {
     return {
       playlistName: this.defaultName,

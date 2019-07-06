@@ -18,7 +18,20 @@
 
 <script>
 export default {
-  props: ['headerSuffix', 'headerSuffixPlural', 'songs'],
+  props: {
+    headerSuffix: {
+      type: String,
+      required: true,
+    },
+    headerSuffixPlural: {
+      type: String,
+      required: true,
+    },
+    songs: {
+      type: Array,
+      required: true,
+    },
+  },
 };
 </script>
 

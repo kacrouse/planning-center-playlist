@@ -14,7 +14,17 @@
 
 <script>
 export default {
-  props: ['title', 'subtitle', 'icon'],
+  props: {
+    title: {
+      type: String,
+      required: true
+    },
+    subtitle: String,
+    icon: {
+      type: String,
+      required: true
+    },
+  },
 };
 </script>
 
