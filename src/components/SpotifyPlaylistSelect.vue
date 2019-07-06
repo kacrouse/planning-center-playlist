@@ -34,9 +34,13 @@
 </template>
 
 <script>
+import CreateSpotifyPlaylistModal from '../components/CreateSpotifyPlaylistModal';
 import SpotifyWebApi from 'spotify-web-api-node';
 
 export default {
+  components: {
+    CreateSpotifyPlaylistModal,
+  },
   props: ['spotifyToken', 'defaultNewPlaylistName'],
   data() {
     return {

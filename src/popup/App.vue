@@ -65,12 +65,20 @@
 </template>
 
 <script>
+import Hero from '../components/Hero';
+import SongList from '../components/SongList';
+import SpotifyPlaylistSelect from '../components/SpotifyPlaylistSelect';
 import { getPlanningCenterToken, getSpotifyToken } from '../services/auth';
 import SpotifyWebApi from 'spotify-web-api-node';
 import { getPlanIdFromUrl } from '../services/PlanningCenterUtil';
 import PlanningCenterServicePlan from '../services/PlanningCenterServicePlan';
 
 export default {
+  components: {
+    Hero,
+    SongList,
+    SpotifyPlaylistSelect,
+  },
   data() {
     return {
       isLoading: true,
