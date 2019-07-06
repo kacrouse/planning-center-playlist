@@ -1,7 +1,7 @@
 {
-  "name": "pco-to-spotify",
+  "name": "planning-center-playlist",
   "version": "1.0.0",
-  "description": "A web extension to create a Spotify playlist from a Planning Center Service",
+  "description": "A browser extension to create a Spotify playlist from a Planning Center Services plan.",
   "author": "Kyle Crouse",
   "scripts": {
     "lint": "eslint --ext .js,.vue src",

@@ -1,7 +1,7 @@
 <template>
   <section class="root">
     <b-loading :is-full-page="true" :active="isLoading" />
-    <bulma-hero title="Planning Center to Spotify" icon="playlist-music" />
+    <bulma-hero title="Planning Center Playlist" icon="playlist-music" />
 
     <main>
       <section>

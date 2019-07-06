@@ -13,7 +13,7 @@
       ref="autocomplete"
       :data="filteredPlaylists"
       field="name"
-      placeholder="Find a playlist"
+      placeholder="Find a Spotify playlist"
       class="playlist-selection"
       icon="magnify"
       v-model="playlistSearchString"
