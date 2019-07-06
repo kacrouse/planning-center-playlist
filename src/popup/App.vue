@@ -157,7 +157,7 @@ export default {
         return;
       }
       browser.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
-        this.planningCenterPlanId = getPlanIdFromUrl(tab.url) || 42745891;
+        this.planningCenterPlanId = getPlanIdFromUrl(tab.url);
       });
     },
     planningCenterPlanId(val) {
