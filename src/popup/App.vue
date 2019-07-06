@@ -106,12 +106,15 @@ export default {
     launchPlanningCenterAuth: function(event) {
       getPlanningCenterToken({ interactive: true }).then(token => {
         this.planningCenterToken = token;
+      }).catch(error => {
+        console.error(error);
+        this.errors.add('An error occurred during Planning Center authentication.');
       });
     },
     launchSpotifyAuth: function(event) {
       getSpotifyToken({ interactive: true }).then(token => {
         this.spotifyToken = token;
-      });
+      }).catch(({error_description}) => this.errors.push(error_description));
     },
     addToSpotifyPlaylist: function(event) {
       this.isLoading = true;
