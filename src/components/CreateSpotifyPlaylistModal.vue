@@ -2,20 +2,20 @@
   <b-modal :active="active" width="75%" @close="$emit('cancel')">
     <b-loading :is-full-page="true" :active="isSaving"></b-loading>
     <div class="box">
-    <div class="flex-container">
-      <b-field label="Playlist Name" class="name-input">
-        <b-input v-model="playlistName" ref="nameInput"/>
-      </b-field>
-      <b-button
-        native-type="button"
-        :disabled="!spotifyToken || !playlistName"
-        type="is-primary"
-        @click="create"
-      >Create</b-button>
-    </div>
-    <div class="field">
-      <b-switch v-model="isPublic">Public</b-switch>
-    </div>
+      <div class="flex-container">
+        <b-field label="Playlist Name" class="name-input">
+          <b-input v-model="playlistName" ref="nameInput" />
+        </b-field>
+        <b-button
+          native-type="button"
+          :disabled="!spotifyToken || !playlistName"
+          type="is-primary"
+          @click="create"
+        >Create</b-button>
+      </div>
+      <div class="field">
+        <b-switch v-model="isPublic">Public</b-switch>
+      </div>
     </div>
   </b-modal>
 </template>
@@ -31,7 +31,7 @@ export default {
       playlistName: this.defaultName,
       isPublic: false,
       spotifyUserId: '',
-      isSaving: false
+      isSaving: false,
     };
   },
   methods: {
@@ -43,7 +43,7 @@ export default {
           this.$emit('playlist-created', body);
         })
         .catch(error => console.log(error))
-        .finally(() => this.isSaving = false);
+        .finally(() => (this.isSaving = false));
     },
   },
   watch: {
@@ -53,10 +53,10 @@ export default {
       new SpotifyWebApi({ accessToken: val })
         .getMe()
         .then(({ body: { id } }) => (this.spotifyUserId = id))
-        .catch(({error: {message='Unknown error'}, ...rest}) => {
+        .catch(({ error: { message = 'Unknown error' }, ...rest }) => {
           console.error(rest);
           this.$emit('error', `Error creating playlist: ${message}`);
-        })
+        });
     },
     active(val) {
       if (val) {

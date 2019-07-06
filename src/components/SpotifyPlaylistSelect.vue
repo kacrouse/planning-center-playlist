@@ -74,7 +74,7 @@ export default {
     },
     clearSelected() {
       this.$refs.autocomplete.setSelected({});
-    }
+    },
   },
   watch: {
     spotifyToken(val) {
@@ -104,11 +104,11 @@ export default {
         .then(allPlaylists => {
           this.playlistOptions = allPlaylists.filter(p => p.collaborative || p.owner.id === spotifyUserId);
         })
-        .catch(({error: {message='Unknown error'}, ...rest}) => {
+        .catch(({ error: { message = 'Unknown error' }, ...rest }) => {
           console.error(rest);
           this.$emit('error', `Error getting playlists: ${message}`);
         })
-        .finally(() => this.loadingPlaylists = false);
+        .finally(() => (this.loadingPlaylists = false));
     },
   },
 };

@@ -21,9 +21,7 @@
           v-if="checkedForSongs && songs.length === 0"
           type="is-danger"
         >No songs were found in this plan. Add some to create a playlist!</b-message>
-        <b-message v-for="error in errors" v-bind:key="error" type="is-danger">
-          {{error}}
-        </b-message>
+        <b-message v-for="error in errors" v-bind:key="error" type="is-danger">{{error}}</b-message>
       </section>
 
       <section class="song-lists">
@@ -89,7 +87,7 @@ export default {
       createdPlaylistId: null,
       targetPlaylistUrl: null,
       selectedPlaylist: null,
-      errors: []
+      errors: [],
     };
   },
   computed: {
@@ -105,17 +103,21 @@ export default {
   },
   methods: {
     launchPlanningCenterAuth: function(event) {
-      getPlanningCenterToken({ interactive: true }).then(token => {
-        this.planningCenterToken = token;
-      }).catch(error => {
-        console.error(error);
-        this.errors.add('An error occurred during Planning Center authentication.');
-      });
+      getPlanningCenterToken({ interactive: true })
+        .then(token => {
+          this.planningCenterToken = token;
+        })
+        .catch(error => {
+          console.error(error);
+          this.errors.add('An error occurred during Planning Center authentication.');
+        });
     },
     launchSpotifyAuth: function(event) {
-      getSpotifyToken({ interactive: true }).then(token => {
-        this.spotifyToken = token;
-      }).catch(({error_description}) => this.errors.push(error_description));
+      getSpotifyToken({ interactive: true })
+        .then(token => {
+          this.spotifyToken = token;
+        })
+        .catch(({ error_description }) => this.errors.push(error_description));
     },
     addToSpotifyPlaylist: function(event) {
       this.isLoading = true;
@@ -128,7 +130,7 @@ export default {
           this.targetPlaylistUrl = this.selectedPlaylist.external_urls.spotify;
           this.$refs.playlistSelect.clearSelected();
         })
-        .catch(({error: {message='Unknown error'}, ...rest}) => {
+        .catch(({ error: { message = 'Unknown error' }, ...rest }) => {
           console.error(rest);
           this.errors.push(`Error adding to playlist: ${message}`);
         })
@@ -175,8 +177,8 @@ export default {
         .then(plan => {
           this.playlistName = plan.data.title || plan.data.dates || this.playlistName;
         })
-        .catch(({errors=[], ...rest}) => {
-          console.error({errors, ...rest});
+        .catch(({ errors = [], ...rest }) => {
+          console.error({ errors, ...rest });
           this.errors.push(...errors.map(e => `Error getting plan details: ${e.detail}`));
         });
       plan
@@ -185,8 +187,8 @@ export default {
           this.songs = songs;
           this.checkedForSongs = true;
         })
-        .catch(({errors=[], ...rest}) => {
-          console.error({errors, ...rest});
+        .catch(({ errors = [], ...rest }) => {
+          console.error({ errors, ...rest });
           this.errors.push(...errors.map(e => `Error getting plan songs: ${e.detail}`));
         })
         .finally(() => (this.isLoading = false));

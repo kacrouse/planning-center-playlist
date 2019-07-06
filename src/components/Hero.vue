@@ -1,21 +1,21 @@
 <template>
   <header class="hero is-primary is-small">
-      <div class="hero-body">
-        <div class="container">
-          <h1 class="title is-flex">
-            <b-icon :icon="icon" size="is-medium"></b-icon>
-            <span class=title-text>{{title}}</span>
-          </h1>
-          <h2 v-if="subtitle" class="subtitle">{{subtitle}}</h2>
-        </div>
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title is-flex">
+          <b-icon :icon="icon" size="is-medium"></b-icon>
+          <span class="title-text">{{title}}</span>
+        </h1>
+        <h2 v-if="subtitle" class="subtitle">{{subtitle}}</h2>
       </div>
-    </header>
+    </div>
+  </header>
 </template>
 
 <script>
 export default {
-  props: ['title', 'subtitle', 'icon']
-}
+  props: ['title', 'subtitle', 'icon'],
+};
 </script>
 
 <style scoped>

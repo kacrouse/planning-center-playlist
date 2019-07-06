@@ -18,7 +18,7 @@
 
 <script>
 export default {
-  props: ['headerSuffix', 'headerSuffixPlural', 'songs']
+  props: ['headerSuffix', 'headerSuffixPlural', 'songs'],
 };
 </script>
 
