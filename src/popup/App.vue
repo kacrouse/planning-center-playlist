@@ -22,7 +22,7 @@
           type="is-danger"
         >No songs were found in this plan. Add some to create a playlist!</b-message>
         <b-message v-for="error in errors" v-bind:key="error" type="is-danger">
-          Error: {{error}}
+          {{error}}
         </b-message>
       </section>
 
@@ -130,7 +130,7 @@ export default {
         })
         .catch(({error: {message='Unknown error'}, ...rest}) => {
           console.error(rest);
-          this.errors.push(message);
+          this.errors.push(`Error adding to playlist: ${message}`);
         })
         .finally(() => (this.isLoading = false));
     },
@@ -177,7 +177,7 @@ export default {
         })
         .catch(({errors=[], ...rest}) => {
           console.error({errors, ...rest});
-          this.errors.push(...errors.map(e => e.detail));
+          this.errors.push(...errors.map(e => `Error getting plan details: ${e.detail}`));
         });
       plan
         .getSongs()
@@ -187,7 +187,7 @@ export default {
         })
         .catch(({errors=[], ...rest}) => {
           console.error({errors, ...rest});
-          this.errors.push(...errors.map(e => e.detail));
+          this.errors.push(...errors.map(e => `Error getting plan songs: ${e.detail}`));
         })
         .finally(() => (this.isLoading = false));
     },
