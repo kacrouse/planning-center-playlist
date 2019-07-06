@@ -1,7 +1,7 @@
 <template>
   <section class="root">
     <b-loading :is-full-page="true" :active="isLoading"></b-loading>
-    <hero title="Planning Center to Spotify" icon="playlist-music"></hero>
+    <bulma-hero title="Planning Center to Spotify" icon="playlist-music"></bulma-hero>
 
     <main>
       <section>
@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import Hero from '../components/Hero';
+import BulmaHero from '../components/BulmaHero';
 import SongList from '../components/SongList';
 import SpotifyPlaylistSelect from '../components/SpotifyPlaylistSelect';
 import { getPlanningCenterToken, getSpotifyToken } from '../services/auth';
@@ -75,7 +75,7 @@ import PlanningCenterServicePlan from '../services/PlanningCenterServicePlan';
 
 export default {
   components: {
-    Hero,
+    BulmaHero,
     SongList,
     SpotifyPlaylistSelect,
   },
