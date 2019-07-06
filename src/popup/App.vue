@@ -124,6 +124,10 @@ export default {
           this.targetPlaylistUrl = this.selectedPlaylist.external_urls.spotify;
           this.$refs.playlistSelect.clearSelected();
         })
+        .catch(({error: {message='Unknown error'}, ...rest}) => {
+          console.error(rest);
+          this.errors.push(message);
+        })
         .finally(() => (this.isLoading = false));
     },
   },
