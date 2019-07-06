@@ -49,6 +49,7 @@
             :spotifyToken="spotifyToken"
             :defaultNewPlaylistName="playlistName"
             @playlist-selected="playlist => selectedPlaylist = playlist"
+            @error="error => this.errors.push(error)"
           ></spotify-playlist-select>
           <b-button
             native-type="submit"

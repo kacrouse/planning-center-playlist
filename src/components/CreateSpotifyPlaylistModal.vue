@@ -53,7 +53,10 @@ export default {
       new SpotifyWebApi({ accessToken: val })
         .getMe()
         .then(({ body: { id } }) => (this.spotifyUserId = id))
-        .catch(error => console.log(error));
+        .catch(({error: {message='Unknown error'}, ...rest}) => {
+          console.error(rest);
+          this.$emit('error', `Error creating playlist: ${message}`);
+        })
     },
     active(val) {
       if (val) {

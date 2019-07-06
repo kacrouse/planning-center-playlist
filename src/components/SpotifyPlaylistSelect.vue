@@ -6,6 +6,7 @@
       :defaultName="defaultNewPlaylistName"
       @cancel="createModalIsActive = false"
       @playlist-created="playlistCreated"
+      @error="error => $emit('error', error)"
     ></create-spotify-playlist-modal>
 
     <b-autocomplete
@@ -103,7 +104,10 @@ export default {
         .then(allPlaylists => {
           this.playlistOptions = allPlaylists.filter(p => p.collaborative || p.owner.id === spotifyUserId);
         })
-        .catch(error => console.log(error))
+        .catch(({error: {message='Unknown error'}, ...rest}) => {
+          console.error(rest);
+          this.$emit('error', `Error getting playlists: ${message}`);
+        })
         .finally(() => this.loadingPlaylists = false);
     },
   },
