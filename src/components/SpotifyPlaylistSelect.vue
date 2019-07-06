@@ -7,7 +7,7 @@
       @cancel="createModalIsActive = false"
       @playlist-created="playlistCreated"
       @error="error => $emit('error', error)"
-    ></create-spotify-playlist-modal>
+    />
 
     <b-autocomplete
       ref="autocomplete"
@@ -24,7 +24,7 @@
     >
       <template slot="header">
         <a @click="createModalIsActive = true" class="new-playlist-link">
-          <b-icon icon="playlist-plus"></b-icon>
+          <b-icon icon="playlist-plus" />
           <span>Create a new playlist</span>
         </a>
       </template>

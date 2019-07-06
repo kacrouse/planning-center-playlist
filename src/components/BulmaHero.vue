@@ -3,7 +3,7 @@
     <div class="hero-body">
       <div class="container">
         <h1 class="title is-flex">
-          <b-icon :icon="icon" size="is-medium"></b-icon>
+          <b-icon :icon="icon" size="is-medium" />
           <span class="title-text">{{title}}</span>
         </h1>
         <h2 v-if="subtitle" class="subtitle">{{subtitle}}</h2>

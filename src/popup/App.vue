@@ -1,7 +1,7 @@
 <template>
   <section class="root">
-    <b-loading :is-full-page="true" :active="isLoading"></b-loading>
-    <bulma-hero title="Planning Center to Spotify" icon="playlist-music"></bulma-hero>
+    <b-loading :is-full-page="true" :active="isLoading" />
+    <bulma-hero title="Planning Center to Spotify" icon="playlist-music" />
 
     <main>
       <section>
@@ -48,7 +48,7 @@
             :defaultNewPlaylistName="playlistName"
             @playlist-selected="playlist => selectedPlaylist = playlist"
             @error="error => this.errors.push(error)"
-          ></spotify-playlist-select>
+          />
           <b-button
             native-type="submit"
             :disabled="songsWithSpotifyUrl.length === 0 || !hasSelectedPlaylist"

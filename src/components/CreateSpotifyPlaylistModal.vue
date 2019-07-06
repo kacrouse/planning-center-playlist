@@ -1,6 +1,6 @@
 <template>
   <b-modal :active="active" width="75%" @close="$emit('cancel')">
-    <b-loading :is-full-page="true" :active="isSaving"></b-loading>
+    <b-loading :is-full-page="true" :active="isSaving" />
     <div class="box">
       <div class="flex-container">
         <b-field label="Playlist Name" class="name-input">
