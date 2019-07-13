@@ -1,8 +1,8 @@
 import PlanningCenterServicesApi from './PlanningCenterServicesApi';
 
 export default class PlanningCenterServicePlan {
-  constructor({ authToken, planId }) {
-    this.api = new PlanningCenterServicesApi({ authToken: authToken });
+  constructor({ authToken, appId, appSecret, planId }) {
+    this.api = new PlanningCenterServicesApi({ authToken, appId, appSecret });
     this.planId = planId;
   }
 
