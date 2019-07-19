@@ -10,6 +10,7 @@ export default {
   remote_link: 'string',
   thumbnail_url: 'string',
   url: 'string',
+  display_name: 'string',
   allow_mp3_download: true,
   web_streamable: true,
   downloadable: true,
